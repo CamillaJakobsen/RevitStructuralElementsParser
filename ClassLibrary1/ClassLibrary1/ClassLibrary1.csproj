@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Roof.cs" />
+    <Compile Include="Models\TerrainDeck.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\InnerWall.cs" />
     <Compile Include="Models\OuterWall.cs" />
