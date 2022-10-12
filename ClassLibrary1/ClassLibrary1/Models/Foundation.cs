@@ -31,11 +31,5 @@ namespace ClassLibrary1.Models
 
         }
 
-        //public double Density { get; set; } Den kan ses i databasen.
-
-
-
-
-
     }
 }
