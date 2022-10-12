@@ -18,7 +18,7 @@ namespace ClassLibrary1.Models
     //UIApplication uiapp = commandData.Application;
     //Document doc = uiapp.ActiveUIDocument.Document;
 
-    public class Wall
+    public class OuterWall
         {
             // Declaring variables
             public int BIM7AATypeID { get; set; }
@@ -30,7 +30,7 @@ namespace ClassLibrary1.Models
            
 
             // Constructor: Starts with lower case letter
-            public Wall(int bIM7AATypeID, string materialID, double area, double thickness)
+            public OuterWall(int bIM7AATypeID, string materialID, double area, double thickness)
             {
                 BIM7AATypeID = bIM7AATypeID;
                 MaterialID = materialID;
