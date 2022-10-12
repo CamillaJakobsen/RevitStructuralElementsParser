@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Wall.cs" />
+    <Compile Include="Models\Deck.cs" />
+    <Compile Include="Models\InnerWall.cs" />
+    <Compile Include="Models\OuterWall.cs" />
     <Compile Include="Models\Beam.cs" />
     <Compile Include="Models\Foundation.cs" />
     <Compile Include="Models\Column.cs" />
