@@ -27,7 +27,7 @@ namespace ClassLibrary1.Models
             public string Id { get; set; }
             // Layer is forexample "Ydervægge" det er en datatype vi selv skaber (Den er ikke defineret endnu
             // Når man skriver { get; set;} betyder det at man kan hente og sætte en værdi det tilsvarer []
-            public List<Layer> LayersInConstruction { get; set; } = new List<Layer>();
+            public List<Column> LayersInConstruction { get; set; } = new List<Column>();
 
             // Man laver en ny instance af classen (Man Instantierer)
             public List<string> ContainedInSpaces { get; set; } = new List<string>();

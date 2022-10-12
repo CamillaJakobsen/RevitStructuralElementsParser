@@ -50,7 +50,7 @@
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Models\Beam.cs" />
     <Compile Include="Models\Foundation.cs" />
-    <Compile Include="Models\Layer.cs" />
+    <Compile Include="Models\Column.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
