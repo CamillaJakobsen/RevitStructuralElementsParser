@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
     <Compile Include="FetchElements.cs" />
     <Compile Include="Models\Roof.cs" />
     <Compile Include="Models\TerrainDeck.cs" />
@@ -57,8 +58,97 @@
     <Compile Include="Models\Beam.cs" />
     <Compile Include="Models\Foundation.cs" />
     <Compile Include="Models\Column.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="bin\Debug\AddInManager.dll" />
+    <Content Include="bin\Debug\AdpSDKCSharpWrapper.dll" />
+    <Content Include="bin\Debug\AdWindows.dll" />
+    <Content Include="bin\Debug\AnalysisAppsDBAPI.dll" />
+    <Content Include="bin\Debug\APIDBAPI.dll" />
+    <Content Include="bin\Debug\APIInterop.dll" />
+    <Content Include="bin\Debug\APIUIAPI.dll" />
+    <Content Include="bin\Debug\ArrayElemsDBAPI.dll" />
+    <Content Include="bin\Debug\AssemblyDBAPI.dll" />
+    <Content Include="bin\Debug\Autodesk.UI.Themes.dll" />
+    <Content Include="bin\Debug\Autodesk.UI.Windows.dll" />
+    <Content Include="bin\Debug\BuildingSystemsDBAPI.dll" />
+    <Content Include="bin\Debug\BuildingSystemsUIAPI.dll" />
+    <Content Include="bin\Debug\ClassLibrary1.dll" />
+    <Content Include="bin\Debug\ClassLibrary1.pdb" />
+    <Content Include="bin\Debug\cs-CZ\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\CurtainGridFamilyDBAPI.dll" />
+    <Content Include="bin\Debug\DBManagedServices.dll" />
+    <Content Include="bin\Debug\de-DE\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\DesktopMFCAPI.dll" />
+    <Content Include="bin\Debug\DetailDBAPI.dll" />
+    <Content Include="bin\Debug\DetailUIAPI.dll" />
+    <Content Include="bin\Debug\DPartDBAPI.dll" />
+    <Content Include="bin\Debug\ElementGroupDBAPI.dll" />
+    <Content Include="bin\Debug\en-GB\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\en-US\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\EnergyAnalysisDBAPI.dll" />
+    <Content Include="bin\Debug\EnergyAnalysisUtilitiesAPI.dll" />
+    <Content Include="bin\Debug\es-ES\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\EssentialsDBAPI.dll" />
+    <Content Include="bin\Debug\EssentialsUIAPI.dll" />
+    <Content Include="bin\Debug\FamilyDBAPI.dll" />
+    <Content Include="bin\Debug\fr-FR\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\GeomUtilAPI.dll" />
+    <Content Include="bin\Debug\GraphicsAPI.dll" />
+    <Content Include="bin\Debug\HostObjDBAPI.dll" />
+    <Content Include="bin\Debug\InterfaceAPI.dll" />
+    <Content Include="bin\Debug\InterfaceUtilAPI.dll" />
+    <Content Include="bin\Debug\IntfATFAPI.dll" />
+    <Content Include="bin\Debug\it-IT\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\ja-JP\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\ko-KR\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\MassingDBAPI.dll" />
+    <Content Include="bin\Debug\MaterialDBAPI.dll" />
+    <Content Include="bin\Debug\NumberingDBAPI.dll" />
+    <Content Include="bin\Debug\PersistenceDBAPI.dll" />
+    <Content Include="bin\Debug\pl-PL\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\PointCloudAccessAPI.dll" />
+    <Content Include="bin\Debug\pt-BR\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\RebarDBAPI.dll" />
+    <Content Include="bin\Debug\RevitAddInUtility.dll" />
+    <Content Include="bin\Debug\RevitAddInUtility.xml" />
+    <Content Include="bin\Debug\RevitAPI.dll" />
+    <Content Include="bin\Debug\RevitAPI.xml" />
+    <Content Include="bin\Debug\RevitAPIFoundation.dll" />
+    <Content Include="bin\Debug\RevitAPIUI.dll" />
+    <Content Include="bin\Debug\RevitAPIUI.xml" />
+    <Content Include="bin\Debug\RevitDBAPI.dll" />
+    <Content Include="bin\Debug\RevitMFCAPI.dll" />
+    <Content Include="bin\Debug\RevitUIAPI.dll" />
+    <Content Include="bin\Debug\RoomAreaPlanDBAPI.dll" />
+    <Content Include="bin\Debug\ru-RU\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\SculptingDBAPI.dll" />
+    <Content Include="bin\Debug\SiteDBAPI.dll" />
+    <Content Include="bin\Debug\StairRampDBAPI.dll" />
+    <Content Include="bin\Debug\StructuralAnalysisDBAPI.dll" />
+    <Content Include="bin\Debug\StructuralDBAPI.dll" />
+    <Content Include="bin\Debug\UIFramework.dll" />
+    <Content Include="bin\Debug\UIFrameworkServices.dll" />
+    <Content Include="bin\Debug\UtilityAPI.dll" />
+    <Content Include="bin\Debug\Xceed.Wpf.AvalonDock.dll" />
+    <Content Include="bin\Debug\zh-CN\AdWindows.resources.dll" />
+    <Content Include="bin\Debug\zh-TW\AdWindows.resources.dll" />
+    <Content Include="obj\Debug\ClassLibrary1.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\ClassLibrary1.dll" />
+    <Content Include="obj\Debug\ClassLibrary1.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="obj\Debug\ClassLibrary1.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\ClassLibrary1.csproj.CopyComplete" />
+    <None Include="obj\Debug\ClassLibrary1.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
+    <Folder Include="obj\Debug\TempPE\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
