@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
+    <Compile Include="SelectElements.cs" />
     <Compile Include="FetchElements.cs" />
     <Compile Include="Models\Roof.cs" />
     <Compile Include="Models\TerrainDeck.cs" />
