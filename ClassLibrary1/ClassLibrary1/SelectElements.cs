@@ -20,7 +20,7 @@ using ClassLibrary1.Models;
 namespace ClassLibrary1
 {
     [Transaction(TransactionMode.Manual)]
-    //[Regeneration(RegenerationOption.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
     public class SelectElements : IExternalCommand
     {
         //Find parameter using the Parameter's definition type.
@@ -39,27 +39,33 @@ namespace ClassLibrary1
 
             //structuralElements = Mapper.MapAllComponents(allElements);
 
-            FilteredElementCollector collection = new FilteredElementCollector(doc); 
+
+            FilteredElementCollector collection = new FilteredElementCollector(doc);
+
+            ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
+
+            List<Wall> outerWalls = collection.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
 
            
-            ElementCategoryFilter allStructuralElements = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
-
-
-            foreach (var element in allStructuralElements)
+            foreach (Wall e in outerWalls)
             {
-                
-                var test = element.Category.Name;
 
-                
-                    // Den bliver casted
-                    var carsten = (AnalyticalModelSurface)element;
-                    var bIM7AATypeID = 123456;
-                    var materialID = carsten.GetTypeId();
-                    double area1 = carsten.GetMaterialArea(materialID, false);
-                    //double thickness =carsten.
+                string wallName = e.Category.Name;
+
+                //var test = element.Category.Name;
+                //if (ElementCategoryFilter() = BuiltInCategory.OST_Walls)
+                //{
+
+                //}
+
+                    
+                    //var bIM7AATypeID = 123456;
+                    //var materialID = "Concrete";
+                    //double area1 = GetMaterialArea(materialID, false);
+                    ////double thickness =carsten.
         
                     
-                    OuterWall outerWall = new OuterWall(bIM7AATypeID, materialID, area1, thickness);
+                    //OuterWall outerWall = new OuterWall(bIM7AATypeID, materialID, area1, thickness);
                 
 
 
