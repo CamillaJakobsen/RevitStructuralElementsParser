@@ -23,6 +23,8 @@ namespace ClassLibrary1
     [Regeneration(RegenerationOption.Manual)]
     public class SelectElements : IExternalCommand
     {
+        private const string V = "Exterior";
+
         //Find parameter using the Parameter's definition type.
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
 
@@ -44,35 +46,73 @@ namespace ClassLibrary1
 
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
 
-            List<Wall> outerWalls = collection.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
+            List<Wall> listOfAllWalls = collection.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
 
-           
-            foreach (Wall e in outerWalls)
+            //ElementClassFilter elementClass = ElementClassFilter(WallType(WallFunction.Exterior));
+
+
+            //WallType wallTypeExterior = new WallType(WallFunction.Exterior);
+
+            //List<Wall> listWallTypeExterior = collection.WherePasses(wallTypeExterior).WhereElementIsNotElementType().Cast<Wall>().ToList();
+
+            //ElementCategoryFilter outerWall = wallTypeExterior;
+
+            List<Wall> exteriorWalls = new List<Wall>();
+
+
+
+
+            foreach (Wall element in listOfAllWalls)
             {
 
-                string wallName = e.Category.Name;
+                //string wallName = element.Category.Name;
 
                 //var test = element.Category.Name;
                 //if (ElementCategoryFilter() = BuiltInCategory.OST_Walls)
-                //{
 
-                //}
+                var test = element.WallType.Function;
+                if (test == WallFunction.Exterior)
+                {
+                    exteriorWalls.Add(element);
 
-                    
-                    //var bIM7AATypeID = 123456;
-                    //var materialID = "Concrete";
-                    //double area1 = GetMaterialArea(materialID, false);
-                    ////double thickness =carsten.
-        
-                    
-                    //OuterWall outerWall = new OuterWall(bIM7AATypeID, materialID, area1, thickness);
+                }
+
                 
-
-
-
 
             }
 
+            foreach (Element element in exteriorWalls)
+            {
+                //var bIM7AATypeID = 123456;
+                WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+                var bIM7AATypeID = walltype.Id;
+                //var materialID = "Concrete";
+                //double areaInFeet = element.get_Parameter(BuiltInParameter
+
+                //var Carsten = (AnalyticalModelSurface)element;
+
+
+                double areaInFeet = element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble();
+
+
+                //Carsten.GetMaterialArea
+
+                // Remember this is not in metrics.
+                WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
+                double thicknessInFeet = wallType.Width;
+                
+
+            }
+
+
+
+            //}
+
+
+
+
+
+            //OuterWall outerWall = new OuterWall(bIM7AATypeID, materialID, area1, thickness);
 
 
             //Reference reference = uidoc.Selection.PickObject(ObjectType.Element);
@@ -86,9 +126,10 @@ namespace ClassLibrary1
 
 
             return Result.Succeeded;
-
-
         }
+
+
+       
 
 
 
