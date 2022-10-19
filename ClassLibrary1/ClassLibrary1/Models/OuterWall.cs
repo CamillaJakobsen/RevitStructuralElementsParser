@@ -19,20 +19,21 @@ namespace ClassLibrary1.Models
     //Document doc = uiapp.ActiveUIDocument.Document;
 
     public class OuterWall
-        {
-            // Declaring variables
-            public int BIM7AATypeID { get; set; }
-            public string MaterialID { get; set; }
-            public double Area { get; set; }
-            public double Thickness { get; set; }
-            public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
+    {
+        // Declaring variables
+        public int TypeID { get; set; }
+
+        public string MaterialID { get; set; }
+        public double Area { get; set; }
+        public double Thickness { get; set; }
+        public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
             // In MaterialProperties is Density, strength, reinforcement ratio etc.
            
 
             // Constructor: Starts with lower case letter
-            public OuterWall(int bIM7AATypeID, string materialID, double area, double thickness)
+            public OuterWall(int typeID, string materialID, double area, double thickness)
             {
-                BIM7AATypeID = bIM7AATypeID;
+                TypeID = typeID;
                 MaterialID = materialID;
                 Area = area;
                 Thickness = thickness;

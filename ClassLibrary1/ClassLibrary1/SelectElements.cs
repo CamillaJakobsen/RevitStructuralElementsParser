@@ -77,33 +77,44 @@ namespace ClassLibrary1
 
                 }
 
-                
 
             }
 
+            
+
             foreach (Element element in exteriorWalls)
             {
-                //var bIM7AATypeID = 123456;
+                
                 WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-                var bIM7AATypeID = walltype.Id;
+                // Change from var to int
+                int typeID = walltype.Id.IntegerValue;
+
+                
+
                 //var materialID = "Concrete";
 
                 //Hvordan får man Structural material??
-                string materialID = element.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsString();
+                //double materialID = element.get_Parameter(BuiltInParameter.SURFACE_AREA).AsDouble();
 
+                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                //var materialID = familyInstance.StructuralMaterialType;
+                string materialID = "Concrete";
 
                 //var Carsten = (AnalyticalModelSurface)element;
 
 
-                double areaInFeet = element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble();
-
+                double area = element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble();
+                // Skal lavet om til m2
+                
 
                 //Carsten.GetMaterialArea
 
                 // Remember this is not in metrics.
                 WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
-                double thicknessInFeet = wallType.Width;
-                
+                double thickness = wallType.Width;
+                //Skal laves om til meter
+
+                //OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
 
             }
 
@@ -115,7 +126,7 @@ namespace ClassLibrary1
 
 
 
-            //OuterWall outerWall = new OuterWall(bIM7AATypeID, materialID, area1, thickness);
+
 
 
             //Reference reference = uidoc.Selection.PickObject(ObjectType.Element);
