@@ -87,7 +87,10 @@ namespace ClassLibrary1
                 WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
                 var bIM7AATypeID = walltype.Id;
                 //var materialID = "Concrete";
-                //double areaInFeet = element.get_Parameter(BuiltInParameter
+
+                //Hvordan får man Structural material??
+                string materialID = element.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsString();
+
 
                 //var Carsten = (AnalyticalModelSurface)element;
 
