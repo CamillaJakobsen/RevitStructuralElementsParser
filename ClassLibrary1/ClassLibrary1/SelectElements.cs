@@ -23,9 +23,9 @@ namespace ClassLibrary1
     [Regeneration(RegenerationOption.Manual)]
     public class SelectElements : IExternalCommand
     {
-        private const string V = "Exterior";
-
+        
         //Find parameter using the Parameter's definition type.
+        
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
 
         {
@@ -34,109 +34,51 @@ namespace ClassLibrary1
             Application app = uiapp.Application;
             Document doc = uidoc.Document;
 
-            //StructuralElements structuralelements = new StructuralElements();
-
-            // var allElements = HelperFunctions.GetConnectorElements(doc);
-            // var allApaces = new FilteredElementCollector(doc).OfClass(typeof(SpatialElement)); 
-
-            //structuralElements = Mapper.MapAllComponents(allElements);
-
-
             FilteredElementCollector collection = new FilteredElementCollector(doc);
 
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
 
             List<Wall> listOfAllWalls = collection.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
 
-            //ElementClassFilter elementClass = ElementClassFilter(WallType(WallFunction.Exterior));
-
-
-            //WallType wallTypeExterior = new WallType(WallFunction.Exterior);
-
-            //List<Wall> listWallTypeExterior = collection.WherePasses(wallTypeExterior).WhereElementIsNotElementType().Cast<Wall>().ToList();
-
-            //ElementCategoryFilter outerWall = wallTypeExterior;
-
             List<Wall> exteriorWalls = new List<Wall>();
 
-
-
-
+            
+            // Creates a Lists of all exterior walls 
             foreach (Wall element in listOfAllWalls)
             {
-
-                //string wallName = element.Category.Name;
-
-                //var test = element.Category.Name;
-                //if (ElementCategoryFilter() = BuiltInCategory.OST_Walls)
-
                 var test = element.WallType.Function;
                 if (test == WallFunction.Exterior)
                 {
                     exteriorWalls.Add(element);
-
                 }
-
-
             }
-
-            
-
+           
+            // Assigns the revit parameters to the Outerwall constructor
             foreach (Element element in exteriorWalls)
             {
-                
+                // Creates the TypeId
                 WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
                 // Change from var to int
                 int typeID = walltype.Id.IntegerValue;
 
-                
-
-                //var materialID = "Concrete";
-
+               
                 //Hvordan får man Structural material??
-                //double materialID = element.get_Parameter(BuiltInParameter.SURFACE_AREA).AsDouble();
-
                 //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                //var materialID = familyInstance.StructuralMaterialType;
+                //var materialID = familyInstance.StructuralMaterialType;              
                 string materialID = "Concrete";
 
-                //var Carsten = (AnalyticalModelSurface)element;
-
-
+                // Creates the area of the wall
                 double area = element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble();
                 // Skal lavet om til m2
                 
-
-                //Carsten.GetMaterialArea
-
                 // Remember this is not in metrics.
                 WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
                 double thickness = wallType.Width;
                 //Skal laves om til meter
 
-                //OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
+                OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
 
             }
-
-
-
-            //}
-
-
-
-
-
-
-
-
-            //Reference reference = uidoc.Selection.PickObject(ObjectType.Element);
-            //Element element = uidoc.Document.GetElement(reference);
-            //using (Transaction tx = new Transaction(doc))
-            //{
-            //    tx.Start("transaction");
-            //    TaskDialog.Show("title :) ", element.Name);
-            //    tx.Commit();
-            //}
 
 
             return Result.Succeeded;
@@ -150,5 +92,3 @@ namespace ClassLibrary1
     }
 }
 
-
-//public class SharedParameterElement : ParameterElement
