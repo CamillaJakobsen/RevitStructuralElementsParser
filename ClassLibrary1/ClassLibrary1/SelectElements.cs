@@ -69,6 +69,7 @@ namespace ClassLibrary1
 
                 // Creates the area of the wall
                 double area = element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble();
+                double area = ImperialMetricConverter.ConvertFromFeetToMeters
                 // Skal lavet om til m2
                 
                 // Remember this is not in metrics.
