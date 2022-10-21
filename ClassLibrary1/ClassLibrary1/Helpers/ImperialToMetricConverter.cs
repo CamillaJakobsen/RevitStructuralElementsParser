@@ -15,7 +15,12 @@ namespace ClassLibrary1.Helpers
 
         public static double ConvertFromSquaredFeetToSquaredMeters(double feet)
         {
-            return feet * 0.0929;
+            return feet * 0.09290;
+        }
+
+        public static double ConvertFromCubicFeetToCubicMeters(double feet)
+        {
+            return feet * 0.02832;
         }
     }
 }
