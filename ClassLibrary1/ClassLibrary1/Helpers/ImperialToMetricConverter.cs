@@ -12,5 +12,10 @@ namespace ClassLibrary1.Helpers
         {
             return feet * 0.3048;
         }
+
+        public static double ConvertFromSquaredFeetToSquaredMeters(double feet)
+        {
+            return feet * 0.0929;
+        }
     }
 }
