@@ -51,6 +51,10 @@ namespace ClassLibrary1
             ElementCategoryFilter allColumns = new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns);
             List<FamilyInstance> listOfAllColumns = column_collector.WherePasses(allColumns).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
 
+            FilteredElementCollector deck_collector = new FilteredElementCollector(doc);
+            ElementCategoryFilter allDecks = new ElementCategoryFilter(BuiltInCategory.OST_Floors);
+            List<Floor> listOfAllDecks = deck_collector.WherePasses(allDecks).WhereElementIsNotElementType().Cast<Floor>().ToList();
+
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
             {
@@ -117,7 +121,6 @@ namespace ClassLibrary1
                 InnerWall innerWall = new InnerWall(typeID, materialID, area, thickness);
 
             }
-
 
             foreach (FamilyInstance element in listOfAllBeams)
             {
