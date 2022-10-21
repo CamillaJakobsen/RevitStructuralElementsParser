@@ -121,8 +121,10 @@ namespace ClassLibrary1
 
             foreach (FamilyInstance element in listOfAllBeams)
             {
-                //Creates the TypeId
-                int typeID = element.GetTypeId().IntegerValue;
+
+                // Creates the TypeId
+                var cast = (Element)element;
+                int typeID = cast.Id.IntegerValue;
 
                 //Maps the material of the beam
                 string materialID = element.StructuralMaterialType.ToString();
@@ -142,7 +144,30 @@ namespace ClassLibrary1
 
                 Beams beams = new Beams(typeID, materialID, length, crossSectionArea);
             }
-            
+
+            foreach (FamilyInstance element in listOfAllColumns)
+            {
+                // Creates the TypeId
+                var cast = (Element)element;
+                int typeID = cast.Id.IntegerValue;
+
+                //Maps the material of the beam
+                string materialID = element.StructuralMaterialType.ToString();
+
+
+                //Maps the length of the column
+                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
+                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
+
+                ////Maps the crossSectionArea
+                // I cant find the right method to extract the crosssectionarea.
+                //var crossSectionArea = element.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsDouble();
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double crossSectionArea = volume / length;
+
+                Columns column = new Columns(typeID, materialID, length, crossSectionArea);
+            }
 
             return Result.Succeeded;
             
