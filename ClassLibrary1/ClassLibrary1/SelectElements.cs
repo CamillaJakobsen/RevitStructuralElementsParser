@@ -19,6 +19,10 @@ using ClassLibrary1.Models;
 using ClassLibrary1.Helpers;
 using Autodesk.Revit.DB.Structure.StructuralSections;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography.X509Certificates;
+using Autodesk.Revit.DB.Visual;
+
+
 
 namespace ClassLibrary1
 {
@@ -29,6 +33,7 @@ namespace ClassLibrary1
 
         //Find parameter using the Parameter's definition type.
 
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
 
         {
@@ -36,6 +41,19 @@ namespace ClassLibrary1
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Application app = uiapp.Application;
             Document doc = uidoc.Document;
+
+
+            
+            //Building a string that contains all the structural elements (Container)
+            //StringBuilder structuralElements = new StringBuilder();
+            //AllStructuralElements allStructuralelements = new AllStructuralElements();
+
+            //var allElements = HelperFunctions.GetConnectorElements(doc);
+            //var allApaces = new FilteredElementCollector(doc).OfClass(typeof(SpatialElement));
+
+            //structuralElements = Mapper.MapAllComponents(allElements);
+
+            
 
             FilteredElementCollector collection = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
@@ -46,7 +64,7 @@ namespace ClassLibrary1
             FilteredElementCollector beam_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allBeams = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
             List<FamilyInstance> listOfAllBeams = beam_collector.WherePasses(allBeams).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
-
+            
             FilteredElementCollector column_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allColumns = new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns);
             List<FamilyInstance> listOfAllColumns = column_collector.WherePasses(allColumns).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
@@ -77,10 +95,20 @@ namespace ClassLibrary1
                 // Change from var to int
                 int typeID = walltype.Id.IntegerValue;
 
+                //CompoundStructureLayer compoundStructureLayer = 
+                //string MaterialID = compoundStructureLayer.MaterialId
+
                 //Hvordan får man Structural material??
                 //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
                 //var materialID = familyInstance.StructuralMaterialType;              
                 string materialID = "Concrete";
+                //WallType.CompoundStructure.Layers
+                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+
+
+                //WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+                
+                
 
                 // Maps the area of the wall
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -122,59 +150,87 @@ namespace ClassLibrary1
 
             }
 
-            foreach (FamilyInstance element in listOfAllBeams)
+            foreach (FamilyInstance familyInstance in listOfAllBeams)
             {
 
+                //double area1 = element.StructuralSection.SectionArea;
+                //var area1 = familyInstance.LookupParameter("A");
+
+                
+
+
+                //var area3 = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsValueString();
+
+
+
+
+                //Parameter parameter2 = familyInstance.LookupParameter("A");
+                //parameter2.AsDouble().ToString();
+
+
+
                 // Creates the TypeId
-                var cast = (Element)element;
+                var cast = (Element)familyInstance;
                 int typeID = cast.Id.IntegerValue;
 
+                
+
                 //Maps the material of the beam
-                string materialID = element.StructuralMaterialType.ToString();
+                string materialID = familyInstance.StructuralMaterialType.ToString();
 
 
                 //Maps the length of the beam
-                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
+                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
 
                 ////Maps the crossSectionArea
                 // I cant find the rigth method to extract the crosssectionarea.
                 //var crossSectionArea = element.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsDouble();
-                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                double crossSectionArea = volume / length;
+                //double crossSectionArea = volume / length;
 
-                Beams beams = new Beams(typeID, materialID, length, crossSectionArea);
+                //Crosssection area in cm2
+                double test = 10.3;
+                string crossSectionArea3 = familyInstance.LookupParameter("A").AsValueString();
+                string[] crossSectionArea4 = crossSectionArea3.Split(' ');
+                double crossSectionArea = Double.Parse(crossSectionArea4[0]);
+
+
+
+                Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
+
+
             }
 
-            foreach (FamilyInstance element in listOfAllColumns)
+            foreach (FamilyInstance familyInstance in listOfAllColumns)
             {
                 // Creates the TypeId
-                var cast = (Element)element;
+                var cast = (Element)familyInstance;
                 int typeID = cast.Id.IntegerValue;
 
                 //Maps the material of the beam
-                string materialID = element.StructuralMaterialType.ToString();
+                string materialID = familyInstance.StructuralMaterialType.ToString();
 
 
                 //Maps the length of the column
-                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
+                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
                 ////Maps the crossSectionArea
                 // I cant find the right method to extract the crosssectionarea.
                 //var crossSectionArea = element.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsDouble();
-                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
                 double crossSectionArea = volume / length;
 
-                Columns column = new Columns(typeID, materialID, length, crossSectionArea);
+                Column column = new Column(typeID, materialID, length, crossSectionArea);
             }
 
             return Result.Succeeded;
-            
 
+            //MessageBox.Show(sb.ToString());
 
 
         }

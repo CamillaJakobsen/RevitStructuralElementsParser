@@ -57,9 +57,9 @@
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\InnerWall.cs" />
     <Compile Include="Models\OuterWall.cs" />
-    <Compile Include="Models\Beams.cs" />
+    <Compile Include="Models\Beam.cs" />
     <Compile Include="Models\Foundation.cs" />
-    <Compile Include="Models\Columns.cs" />
+    <Compile Include="Models\Column.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

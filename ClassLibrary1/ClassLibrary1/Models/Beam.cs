@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary1.Models
 {
-    public class Beams
+    public class Beam
     {
         // Declaring variables
         public int TypeID { get; set; }
@@ -17,7 +17,7 @@ namespace ClassLibrary1.Models
         public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
 
         // Constructor: Starts with lower case letter
-        public Beams(int typeID, string materialID, double length, double crossSectionalArea)
+        public Beam(int typeID, string materialID, double length, double crossSectionalArea)
         {
             TypeID = typeID;
             MaterialID = materialID;
