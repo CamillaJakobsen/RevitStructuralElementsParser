@@ -12,7 +12,7 @@ namespace ClassLibrary1.Models
     public class Foundation
     {
         // Declaring variables
-        public int BIM7AATypeID { get; set; }
+        public int TypeID { get; set; }
         public string MaterialID { get; set; }
         public double Length { get; set; }
         public double Width { get; set; }
@@ -21,9 +21,9 @@ namespace ClassLibrary1.Models
         public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
 
         // Constructor: Starts with lower case letter
-        public Foundation(int bIM7AATypeID, string materialID, double length, double width, double height)
+        public Foundation(int typeID, string materialID, double length, double width, double height)
         {
-            BIM7AATypeID = bIM7AATypeID;
+            TypeID = typeID;
             MaterialID = materialID;
             Length = length;
             Width = width;

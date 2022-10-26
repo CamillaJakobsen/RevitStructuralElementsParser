@@ -75,6 +75,10 @@ namespace ClassLibrary1
             ElementCategoryFilter allDecks = new ElementCategoryFilter(BuiltInCategory.OST_Floors);
             List<Floor> listOfAllDecks = deck_collector.WherePasses(allDecks).WhereElementIsNotElementType().Cast<Floor>().ToList();
 
+            FilteredElementCollector foundation_collector = new FilteredElementCollector(doc);
+            ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
+            List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
+
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
             {
@@ -214,9 +218,94 @@ namespace ClassLibrary1
                 Column column = new Column(typeID, materialID, length, crossSectionArea);
             }
 
+            // Assigns the revit parameters to the Outerwall constructor
+            foreach (Element element in listOfAllDecks)
+            {
+                // Creates the TypeId
+                
+                // Change from var to int
+                int typeID = element.Id.IntegerValue;
+
+                //Hvordan får man Structural material??
+                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                //var materialID = familyInstance.StructuralMaterialType;              
+                string materialID = "Concrete";
+                
+                // Maps the area of the deck
+                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+
+                // Maps the thickness of the wall
+                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.FLOOR_ATTR_THICKNESS_PARAM).AsDouble());
+                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 3);
+
+
+
+                Deck deck = new Deck(typeID, materialID, area, thickness);
+
+            }
+
+            // Assigns the revit parameters to the Outerwall constructor
+            foreach (Element element in listOfAllFoundation)
+            {
+                  
+                var test = element.GetType().Name;
+                if ((test == "WallFoundation") || (test == "Floor"))
+                {
+                    // Creates the TypeId
+                    int typeID = element.Id.IntegerValue;
+
+                    //Hvordan får man Structural material??          
+                    string materialID = "Concrete";
+                    //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
+
+                    // Maps the width of the foundation
+                    double width1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_WIDTH).AsDouble());
+                    double width = RoundToSignificantDigits.RoundDigits(width1, 4);
+
+                    // Maps the length of the foundation
+                    double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_LENGTH).AsDouble());
+                    double length = RoundToSignificantDigits.RoundDigits(length1, 4);
+
+                    // Maps the height of the foundation
+                    double height1 = ImperialToMetricConverter.ConvertFromFeetToMeters(doc.GetElement(element.GetTypeId()).LookupParameter("Foundation Thickness").AsDouble());
+                    double height = RoundToSignificantDigits.RoundDigits(height1, 4);
+
+                    Foundation foundation = new Foundation(typeID, materialID, length, width, height);
+                }
+
+                else if (test == "FamilyInstance")
+                {
+                    // Creates the TypeId
+                    int typeID = element.Id.IntegerValue;
+
+                    //Hvordan får man Structural material??          
+                    string materialID = "Concrete";
+                    //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
+
+                    // Maps the width of the foundation
+                    double width1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_WIDTH).AsDouble());
+                    double width = RoundToSignificantDigits.RoundDigits(width1, 4);
+
+                    // Maps the length of the foundation
+                    double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_LENGTH).AsDouble());
+                    double length = RoundToSignificantDigits.RoundDigits(length1, 4);
+
+                    // Maps the height of the foundation
+                    //This one is not working
+                    double height1 = ImperialToMetricConverter.ConvertFromFeetToMeters(doc.GetElement(element.GetTypeId()).LookupParameter("Thickness").AsDouble());
+                    double height = RoundToSignificantDigits.RoundDigits(height1, 4);
+
+                    Foundation foundation = new Foundation(typeID, materialID, length, width, height);
+                }
+                
+
+                
+            }
+
             return Result.Succeeded;
 
-            //MessageBox.Show(sb.ToString());
+            
 
 
         }

@@ -18,7 +18,7 @@ namespace ClassLibrary1.Models
     public class Deck
     {
         // Declaring variables
-        public int BIM7AATypeID { get; set; }
+        public int TypeID { get; set; }
         public string MaterialID { get; set; }
         public double Area { get; set; }
         public double Thickness { get; set; }
@@ -27,9 +27,9 @@ namespace ClassLibrary1.Models
 
 
         // Constructor: Starts with lower case letter
-        public Deck(int bIM7AATypeID, string materialID, double area, double thickness)
+        public Deck(int typeID, string materialID, double area, double thickness)
         {
-            BIM7AATypeID = bIM7AATypeID;
+            TypeID = typeID;
             MaterialID = materialID;
             Area = area;
             Thickness = thickness;
