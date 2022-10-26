@@ -21,6 +21,8 @@ using Autodesk.Revit.DB.Structure.StructuralSections;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
 using Autodesk.Revit.DB.Visual;
+using System.Globalization;
+
 
 
 
@@ -153,22 +155,6 @@ namespace ClassLibrary1
             foreach (FamilyInstance familyInstance in listOfAllBeams)
             {
 
-                //double area1 = element.StructuralSection.SectionArea;
-                //var area1 = familyInstance.LookupParameter("A");
-
-                
-
-
-                //var area3 = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsValueString();
-
-
-
-
-                //Parameter parameter2 = familyInstance.LookupParameter("A");
-                //parameter2.AsDouble().ToString();
-
-
-
                 // Creates the TypeId
                 var cast = (Element)familyInstance;
                 int typeID = cast.Id.IntegerValue;
@@ -184,20 +170,16 @@ namespace ClassLibrary1
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
 
-                ////Maps the crossSectionArea
-                // I cant find the rigth method to extract the crosssectionarea.
-                //var crossSectionArea = element.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsDouble();
-                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                //double crossSectionArea = volume / length;
+                ////Maps the crossSectionArea based on the volume and the length
+                //double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                //double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                //double crossSectionAreaVol = volume / length;
 
                 //Crosssection area in cm2
-                double test = 10.3;
-                string crossSectionArea3 = familyInstance.LookupParameter("A").AsValueString();
-                string[] crossSectionArea4 = crossSectionArea3.Split(' ');
-                double crossSectionArea = Double.Parse(crossSectionArea4[0]);
-
-
+                string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
+                string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
+                //Crosssection area in m2
+                var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
                 Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
 
@@ -218,12 +200,16 @@ namespace ClassLibrary1
                 double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
-                ////Maps the crossSectionArea
-                // I cant find the right method to extract the crosssectionarea.
-                //var crossSectionArea = element.get_Parameter(BuiltInParameter.STRUCTURAL_SECTION_AREA).AsDouble();
-                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                double crossSectionArea = volume / length;
+                ////Maps the crossSectionArea based on volume and length
+                //double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                //double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                //double crossSectionArea = volume / length;
+
+                //Crosssection area in cm2
+                string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
+                string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
+                //Crosssection area in m2
+                var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
                 Column column = new Column(typeID, materialID, length, crossSectionArea);
             }
