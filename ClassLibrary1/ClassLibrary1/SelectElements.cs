@@ -26,6 +26,9 @@ using System.Globalization;
 
 
 
+
+
+
 namespace ClassLibrary1
 {
     [Transaction(TransactionMode.Manual)]
@@ -43,12 +46,6 @@ namespace ClassLibrary1
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Application app = uiapp.Application;
             Document doc = uidoc.Document;
-
-
-            //Building a string that contains all the structural elements (Container)
-            StringBuilder structuralElements = new StringBuilder();
-            //structuralElements = structuralElements.Append("").ToArray();
-
 
             FilteredElementCollector collection = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
@@ -71,6 +68,13 @@ namespace ClassLibrary1
             FilteredElementCollector foundation_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
+
+
+            //List<StructuralElements> ListOfAllStructuralElements = new List<StructuralElements>();
+            //StructuralElements structuralElements = new StructuralElements();
+
+            StringBuilder structuralElements = new StringBuilder();
+            
 
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
@@ -104,11 +108,6 @@ namespace ClassLibrary1
                 //WallType.CompoundStructure.Layers
                 //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
 
-
-                //WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-                
-                
-
                 // Maps the area of the wall
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
                 double area = RoundToSignificantDigits.RoundDigits(area1, 3);
@@ -118,8 +117,14 @@ namespace ClassLibrary1
                 double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
                 double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
+                
+                //OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
+                object[] outerWall = { typeID, materialID, area, thickness };
 
-                OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
+                
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , Thickness: {3}", outerWall);
+                structuralElements.AppendLine();
+                Console.WriteLine(structuralElements.ToString());
 
             }
 
@@ -145,7 +150,14 @@ namespace ClassLibrary1
                 double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
                 double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
-                InnerWall innerWall = new InnerWall(typeID, materialID, area, thickness);
+                //InnerWall innerWall = new InnerWall(typeID, materialID, area, thickness);
+
+                object[] innerWall = { typeID, materialID, area, thickness };
+
+
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , Thickness: {3}", innerWall);
+                structuralElements.AppendLine();
+                Console.WriteLine(structuralElements.ToString());
 
             }
 
@@ -158,7 +170,6 @@ namespace ClassLibrary1
                 int typeID = cast.Id.IntegerValue;
 
                 
-
                 //Maps the material of the beam
                 string materialID = familyInstance.StructuralMaterialType.ToString();
 
@@ -179,8 +190,14 @@ namespace ClassLibrary1
                 ////Crosssection area in m2
                 //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
-                Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
+                //Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
 
+                object[] beam = { typeID, materialID, length, crossSectionArea };
+
+
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , length: {2} , crossSectionArea: {3}", beam);
+                structuralElements.AppendLine();
+                
 
             }
 
@@ -210,7 +227,13 @@ namespace ClassLibrary1
                 ////Crosssection area in m2
                 //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
-                Column column = new Column(typeID, materialID, length, crossSectionArea);
+                //Column column = new Column(typeID, materialID, length, crossSectionArea);
+
+                object[] column = { typeID, materialID, length, crossSectionArea };
+
+
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , length: {2} , crossSectionArea: {3}", column);
+                structuralElements.AppendLine();
             }
 
             // Assigns the revit parameters to the Deck constructor
@@ -236,105 +259,43 @@ namespace ClassLibrary1
 
 
 
-                Deck deck = new Deck(typeID, materialID, area, thickness);
+                //Deck deck = new Deck(typeID, materialID, area, thickness);
+
+                object[] deck = { typeID, materialID, area, thickness };
+
+
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , thickness: {3}", deck);
+                structuralElements.AppendLine();
 
             }
 
             // Assigns the revit parameters to the Foundation constructor
             foreach (Element element in listOfAllFoundation)
             {
-                  
-                var test = element.GetType().Name;
-                if ((test == "WallFoundation") || (test == "Floor"))
-                {
-                    // Creates the TypeId
-                    int typeID = element.Id.IntegerValue;
 
-                    //Hvordan får man Structural material??          
-                    string materialID = "Concrete";
-                    //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
+                //Creates the TypeId
+                int typeID = element.Id.IntegerValue;
 
-                    // Maps the width of the foundation
-                    double width1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_WIDTH).AsDouble());
-                    double width = RoundToSignificantDigits.RoundDigits(width1, 4);
-
-                    // Maps the length of the foundation
-                    double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_LENGTH).AsDouble());
-                    double length = RoundToSignificantDigits.RoundDigits(length1, 4);
-
-                    // Maps the height of the foundation
-                    double height1 = ImperialToMetricConverter.ConvertFromFeetToMeters(doc.GetElement(element.GetTypeId()).LookupParameter("Foundation Thickness").AsDouble());
-                    double height = RoundToSignificantDigits.RoundDigits(height1, 4);
-
-                    Foundation foundation = new Foundation(typeID, materialID, length, width, height);
-                }
-
-                else if (test == "FamilyInstance")
-                {
-                    // Creates the TypeId
-                    int typeID = element.Id.IntegerValue;
-
-                    //Hvordan får man Structural material??          
-                    string materialID = "Concrete";
-                    //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
-
-                    // Maps the width of the foundation
-                    double width1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_WIDTH).AsDouble());
-                    double width = RoundToSignificantDigits.RoundDigits(width1, 4);
-
-                    // Maps the length of the foundation
-                    double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.CONTINUOUS_FOOTING_LENGTH).AsDouble());
-                    double length = RoundToSignificantDigits.RoundDigits(length1, 4);
-
-                    // Maps the height of the foundation
-                    //This one is not working
-                    double height1 = ImperialToMetricConverter.ConvertFromFeetToMeters(doc.GetElement(element.GetTypeId()).LookupParameter("Thickness").AsDouble());
-                    double height = RoundToSignificantDigits.RoundDigits(height1, 4);
-
-                    Foundation foundation = new Foundation(typeID, materialID, length, width, height);
-                }
-                
-
-                
-            }
-
-            // Assigns the revit parameters to the Terraindeck constructor
-            foreach (Element element in exteriorWalls)
-            {
-                // Creates the TypeId
-                WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-                // Change from var to int
-                int typeID = walltype.Id.IntegerValue;
-
-                //CompoundStructureLayer compoundStructureLayer = 
-                //string MaterialID = compoundStructureLayer.MaterialId
-
-                //Hvordan får man Structural material??
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                //var materialID = familyInstance.StructuralMaterialType;              
+                //Hvordan får man Structural material ??
                 string materialID = "Concrete";
-                //WallType.CompoundStructure.Layers
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                //string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
+                
+                
+
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+
+                //Foundation foundation = new Foundation(typeID, materialID, volume);
+
+                object[] foundation = { typeID, materialID, volume };
 
 
-                //WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-
-
-
-                // Maps the area of the wall
-                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
-
-                // Maps the thickness of the wall
-                WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
-                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
-                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
-
-
-                OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
+                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , volume: {2}", foundation);
+                structuralElements.AppendLine();
 
             }
 
+            
             return Result.Succeeded;
 
             

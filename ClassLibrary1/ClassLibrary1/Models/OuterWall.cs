@@ -26,7 +26,7 @@ namespace ClassLibrary1.Models
         public string MaterialID { get; set; }
         public double Area { get; set; }
         public double Thickness { get; set; }
-        public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
+        //public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
             // In MaterialProperties is Density, strength, reinforcement ratio etc.
            
 

@@ -14,7 +14,7 @@ namespace ClassLibrary1.Models
         public double Length { get; set; }
 
         public double CrossSectionalArea { get; set; }
-        public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
+        //public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
 
         // Constructor: Starts with lower case letter
         public Column(int typeID, string materialID, double length, double crossSectionalArea)
