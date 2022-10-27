@@ -45,17 +45,10 @@ namespace ClassLibrary1
             Document doc = uidoc.Document;
 
 
-            
             //Building a string that contains all the structural elements (Container)
-            //StringBuilder structuralElements = new StringBuilder();
-            //AllStructuralElements allStructuralelements = new AllStructuralElements();
+            StringBuilder structuralElements = new StringBuilder();
+            //structuralElements = structuralElements.Append("").ToArray();
 
-            //var allElements = HelperFunctions.GetConnectorElements(doc);
-            //var allApaces = new FilteredElementCollector(doc).OfClass(typeof(SpatialElement));
-
-            //structuralElements = Mapper.MapAllComponents(allElements);
-
-            
 
             FilteredElementCollector collection = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
@@ -156,6 +149,7 @@ namespace ClassLibrary1
 
             }
 
+            // Assigns the revit parameters to the Beam constructor
             foreach (FamilyInstance familyInstance in listOfAllBeams)
             {
 
@@ -175,21 +169,22 @@ namespace ClassLibrary1
 
 
                 ////Maps the crossSectionArea based on the volume and the length
-                //double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                //double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                //double crossSectionAreaVol = volume / length;
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double crossSectionArea = volume / length;
 
-                //Crosssection area in cm2
-                string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
-                string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
-                //Crosssection area in m2
-                var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
+                ////Crosssection area in cm2
+                //string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
+                //string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
+                ////Crosssection area in m2
+                //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
                 Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
 
 
             }
 
+            // Assigns the revit parameters to the Column constructor
             foreach (FamilyInstance familyInstance in listOfAllColumns)
             {
                 // Creates the TypeId
@@ -205,20 +200,20 @@ namespace ClassLibrary1
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
                 ////Maps the crossSectionArea based on volume and length
-                //double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                //double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                //double crossSectionArea = volume / length;
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double crossSectionArea = volume / length;
 
-                //Crosssection area in cm2
-                string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
-                string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
-                //Crosssection area in m2
-                var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
+                ////Crosssection area in cm2
+                //string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
+                //string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
+                ////Crosssection area in m2
+                //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
                 Column column = new Column(typeID, materialID, length, crossSectionArea);
             }
 
-            // Assigns the revit parameters to the Outerwall constructor
+            // Assigns the revit parameters to the Deck constructor
             foreach (Element element in listOfAllDecks)
             {
                 // Creates the TypeId
@@ -245,7 +240,7 @@ namespace ClassLibrary1
 
             }
 
-            // Assigns the revit parameters to the Outerwall constructor
+            // Assigns the revit parameters to the Foundation constructor
             foreach (Element element in listOfAllFoundation)
             {
                   
@@ -301,6 +296,43 @@ namespace ClassLibrary1
                 
 
                 
+            }
+
+            // Assigns the revit parameters to the Terraindeck constructor
+            foreach (Element element in exteriorWalls)
+            {
+                // Creates the TypeId
+                WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+                // Change from var to int
+                int typeID = walltype.Id.IntegerValue;
+
+                //CompoundStructureLayer compoundStructureLayer = 
+                //string MaterialID = compoundStructureLayer.MaterialId
+
+                //Hvordan får man Structural material??
+                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                //var materialID = familyInstance.StructuralMaterialType;              
+                string materialID = "Concrete";
+                //WallType.CompoundStructure.Layers
+                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+
+
+                //WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+
+
+
+                // Maps the area of the wall
+                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+
+                // Maps the thickness of the wall
+                WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
+                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
+                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
+
+
+                OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
+
             }
 
             return Result.Succeeded;
