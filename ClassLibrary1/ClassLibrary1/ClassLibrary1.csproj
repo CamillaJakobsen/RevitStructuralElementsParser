@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
     </Reference>
@@ -48,16 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\JsonParser.cs" />
     <Compile Include="Helpers\SquaredcmToSquaredm.cs" />
     <Compile Include="Helpers\RoundToSignificantDigits.cs" />
     <Compile Include="Helpers\ImperialToMetricConverter.cs" />
-    <Compile Include="SelectElements.cs" />
+    <Compile Include="Models\AllStructuralElements.cs" />
+    <Compile Include="Models\SelectElements.cs" />
     <Compile Include="FetchElements.cs" />
     <Compile Include="Models\Roof.cs" />
     <Compile Include="Models\TerrainDeck.cs" />
     <Compile Include="Models\Deck.cs" />
-    <Compile Include="Models\InnerWall.cs" />
-    <Compile Include="Models\OuterWall.cs" />
+    <Compile Include="Models\InteriorWall.cs" />
+    <Compile Include="Models\ExteriorWall.cs" />
     <Compile Include="Models\Beam.cs" />
     <Compile Include="Models\Foundation.cs" />
     <Compile Include="Models\Column.cs" />
@@ -148,9 +153,11 @@
     <None Include="obj\Debug\ClassLibrary1.csproj.CoreCompileInputs.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />
+    <Folder Include="MapElements\" />
     <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

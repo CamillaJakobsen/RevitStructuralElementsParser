@@ -1,56 +1,27 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Autodesk.Revit.ApplicationServices;
-//using Autodesk.Revit.Attributes;
-//using Autodesk.Revit.DB;
-//using Autodesk.Revit.UI;
-//using Autodesk.Revit.UI.Selection;
-//using Autodesk.Revit.DB.Architecture;
-//using System.Windows.Forms;
+﻿using System;
+namespace CSharpStrings
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Define .NET Strings
+            // String of characters
+            System.String authorName = "Mahesh Chand";
 
-//namespace ClassLibrary1
-//{
+            // String made of an Integer
+            System.String age = "33";
 
-//    [Transaction(TransactionMode.Manual)]
-//    //[Regeneration(RegenerationOption.Manual)]
-//    public class FetchElements : IExternalCommand
-//    {
-//        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-//        {
-//            //Get application and document objects
-//            UIApplication uiapp = commandData.Application;
-//            Document doc = uiapp.ActiveUIDocument.Document;
-//            //Document doc = commandData.Application.ActiveUIDocument.Document;
+            // String made of a double
+            System.String numberString = "33.23";
 
-//            //var filterElement = new FilteredElementCollector(doc).WhereElementIsNotElementType().WhereElementIsViewIndependent().Where(x => x.Category !=
-//            //null && x.get_BoundingBox(null) != null && x.get_Geometry(new Options() { ComputeReferences = true }) != null);
+            // Write to Console.
 
+            Console.WriteLine("Name: {0}", authorName);
+            Console.WriteLine("Age: {0}", age);
+            Console.WriteLine("Number: {0}", numberString);
+            Console.ReadKey();
 
-
-
-//            //StringBuilder sb = new StringBuilder();
-
-//            //foreach (Element e in filterElement)
-//            //{
-//            //    if (e.IsValidObject)
-//            //    {
-//            //        sb.AppendLine("Element Category : " + e.Category.Name + ", Name : " + e.Name + ", Element Id : " + e.Id + Environment.NewLine);
-//            //    }
-//            //}
-
-//            //MessageBox.Show(sb.ToString());
-
-            
-
-//            //return Result.Succeeded;
-           
-
-//        }
-//    }
-//}
-
-
-////ElementCategory = Element.category.Name
+        }
+    }
+}

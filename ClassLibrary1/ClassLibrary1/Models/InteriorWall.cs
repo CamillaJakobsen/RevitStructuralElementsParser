@@ -15,7 +15,7 @@ using System.Xml.Linq;
 namespace ClassLibrary1.Models
 {
 
-    public class InnerWall
+    public class InteriorWall
     {
         // Declaring variables
         public int TypeID { get; set; }
@@ -27,7 +27,7 @@ namespace ClassLibrary1.Models
 
 
         // Constructor: Starts with lower case letter
-        public InnerWall(int typeID, string materialID, double area, double thickness)
+        public InteriorWall(int typeID, string materialID, double area, double thickness)
         {
             TypeID = typeID;
             MaterialID = materialID;

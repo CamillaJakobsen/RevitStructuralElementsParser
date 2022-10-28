@@ -7,7 +7,6 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.Architecture;
 using System.Windows.Forms;
@@ -22,12 +21,8 @@ using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
 using Autodesk.Revit.DB.Visual;
 using System.Globalization;
-
-
-
-
-
-
+using System.IO;
+using Autodesk.Revit.DB.Structure;
 
 namespace ClassLibrary1
 {
@@ -36,20 +31,16 @@ namespace ClassLibrary1
     public class SelectElements : IExternalCommand
     {
 
-        //Find parameter using the Parameter's definition type.
-
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
 
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
-            Application app = uiapp.Application;
             Document doc = uidoc.Document;
 
-            FilteredElementCollector collection = new FilteredElementCollector(doc);
+            FilteredElementCollector wall_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
-            List<Wall> listOfAllWalls = collection.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
+            List<Wall> listOfAllWalls = wall_collector.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
             List<Wall> exteriorWalls = new List<Wall>();
             List<Wall> interiorWalls = new List<Wall>();
 
@@ -72,8 +63,10 @@ namespace ClassLibrary1
 
             //List<StructuralElements> ListOfAllStructuralElements = new List<StructuralElements>();
             //StructuralElements structuralElements = new StructuralElements();
-
+            
             StringBuilder structuralElements = new StringBuilder();
+            //public List<StructuralElement> structuralElements { get; set; }; 
+
             
 
             // Creates a Lists of all exterior and interior walls 
@@ -93,72 +86,80 @@ namespace ClassLibrary1
             // Assigns the revit parameters to the Outerwall constructor
             foreach (Element element in exteriorWalls)
             {
-                // Creates the TypeId
-                WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-                // Change from var to int
-                int typeID = walltype.Id.IntegerValue;
+                var structuralUsage = element.LookupParameter("Structural Usage").AsValueString();
 
-                //CompoundStructureLayer compoundStructureLayer = 
-                //string MaterialID = compoundStructureLayer.MaterialId
+                if (structuralUsage == "Bearing")
+                {
+                    // Creates the TypeId
+                    WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+                    // Change from var to int
+                    int typeID = walltype.Id.IntegerValue;
 
-                //Hvordan får man Structural material??
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                //var materialID = familyInstance.StructuralMaterialType;              
-                string materialID = "Concrete";
-                //WallType.CompoundStructure.Layers
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                    //CompoundStructureLayer compoundStructureLayer = 
+                    //string MaterialID = compoundStructureLayer.MaterialId
 
-                // Maps the area of the wall
-                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    //Hvordan får man Structural material??
+                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                    //var materialID = familyInstance.StructuralMaterialType;              
+                    string materialID = "Concrete";
+                    //WallType.CompoundStructure.Layers
+                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
 
-                // Maps the thickness of the wall
-                WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
-                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
-                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
+                    // Maps the area of the wall
+                    double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
 
-                
-                //OuterWall outerWall = new OuterWall(typeID, materialID, area, thickness);
-                object[] outerWall = { typeID, materialID, area, thickness };
+                    // Maps the thickness of the wall
+                    WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
+                    double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
+                    double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
-                
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , Thickness: {3}", outerWall);
-                structuralElements.AppendLine();
-                Console.WriteLine(structuralElements.ToString());
 
+                    //ExteriorWall exteriorWall = new ExteriorWall(typeID, materialID, area, thickness);
+                    object[] exteriorWall = { typeID, materialID, area, thickness };
+
+
+                    structuralElements.AppendFormat("ExteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", exteriorWall);
+                    structuralElements.AppendLine();
+                }
             }
 
             // Assigns the revit parameters to the Innerwall constructor
             foreach (Element element in interiorWalls)
             {
-                // Creates the TypeId
-                WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
-                // Change from var to int
-                int typeID = walltype.Id.IntegerValue;
+                var structuralUsage = element.LookupParameter("Structural Usage").AsValueString();
 
-                //Hvordan får man Structural material??
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                //var materialID = familyInstance.StructuralMaterialType;              
-                string materialID = "Concrete";
+                if (structuralUsage == "Bearing")
+                {
 
-                // Maps the area of the wall
-                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    // Creates the TypeId
+                    WallType walltype = doc.GetElement(element.GetTypeId()) as WallType;
+                    // Change from var to int
+                    int typeID = walltype.Id.IntegerValue;
 
-                // Maps the thickness of the wall
-                WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
-                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
-                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
+                    //Hvordan får man Structural material??
+                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                    //var materialID = familyInstance.StructuralMaterialType;              
+                    string materialID = "Concrete";
 
-                //InnerWall innerWall = new InnerWall(typeID, materialID, area, thickness);
+                    // Maps the area of the wall
+                    double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
 
-                object[] innerWall = { typeID, materialID, area, thickness };
+                    // Maps the thickness of the wall
+                    WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
+                    double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
+                    double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
+
+                    //InteriorWalls interiorWalls = new InnerWall(typeID, materialID, area, thickness);
+
+                    object[] interiorWall = { typeID, materialID, area, thickness };
 
 
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , Thickness: {3}", innerWall);
-                structuralElements.AppendLine();
-                Console.WriteLine(structuralElements.ToString());
-
+                    structuralElements.AppendFormat("InteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", interiorWall);
+                    structuralElements.AppendLine();
+                    
+                }
             }
 
             // Assigns the revit parameters to the Beam constructor
@@ -195,7 +196,7 @@ namespace ClassLibrary1
                 object[] beam = { typeID, materialID, length, crossSectionArea };
 
 
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , length: {2} , crossSectionArea: {3}", beam);
+                structuralElements.AppendFormat("Beam: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", beam);
                 structuralElements.AppendLine();
                 
 
@@ -232,7 +233,7 @@ namespace ClassLibrary1
                 object[] column = { typeID, materialID, length, crossSectionArea };
 
 
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , length: {2} , crossSectionArea: {3}", column);
+                structuralElements.AppendFormat("Column: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", column);
                 structuralElements.AppendLine();
             }
 
@@ -264,7 +265,7 @@ namespace ClassLibrary1
                 object[] deck = { typeID, materialID, area, thickness };
 
 
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , area: {2} , thickness: {3}", deck);
+                structuralElements.AppendFormat("Deck: typeID id: {0}, materialID: {1}, area: {2}, thickness: {3}", deck);
                 structuralElements.AppendLine();
 
             }
@@ -290,19 +291,21 @@ namespace ClassLibrary1
                 object[] foundation = { typeID, materialID, volume };
 
 
-                structuralElements.AppendFormat("typeID id: {0} , materialID: {1} , volume: {2}", foundation);
+                structuralElements.AppendFormat("Foundation: typeID id: {0}, materialID: {1}, volume: {2}", foundation);
                 structuralElements.AppendLine();
 
             }
 
-            
+            File.WriteAllText(@"C:\Users\camil\Documents\StructuralElements.txt", structuralElements.ToString());
+
+
+            TaskDialog.Show("Revit", "Succeeded");
+
             return Result.Succeeded;
-
             
-
 
         }
-
+        
 
     }
 }
