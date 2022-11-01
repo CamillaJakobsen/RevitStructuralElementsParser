@@ -248,7 +248,10 @@ namespace ClassLibrary1
                 //Hvordan får man Structural material??
                 //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
                 //var materialID = familyInstance.StructuralMaterialType;              
-                string materialID = "Concrete";
+                //string materialID = "Concrete";
+                var carsten = (Floor)element;
+                string materialID = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
+                
                 
                 // Maps the area of the deck
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
