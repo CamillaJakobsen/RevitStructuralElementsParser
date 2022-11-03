@@ -12,7 +12,7 @@ using Autodesk.Revit.DB.Architecture;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 
-namespace ClassLibrary1.Models
+namespace StructuralElementsExporter.Models
 {
     //Get application and document objects
     //UIApplication uiapp = commandData.Application;

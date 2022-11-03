@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibrary1.Models
+namespace StructuralElementsExporter.Models
 {
     public class AllStructuralElements
     {
-        //public Dictionary<string, SubSystem> SubSystems { get; set; } = new Dictionary<string, SubSystem>();
+        //public Dictionary<string, Dictionary<string, StructuralElement>> structuralElement { get; set; } = new Dictionary<string, structuralElement>();
+
+
         public AllStructuralElements()
         {
 

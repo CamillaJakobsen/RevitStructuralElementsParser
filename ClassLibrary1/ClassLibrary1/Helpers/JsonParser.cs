@@ -1,13 +1,13 @@
 ﻿using System;
-using ClassLibrary1.Models;
-using ClassLibrary1.Helpers;
+using StructuralElementsExporter.Models;
+using StructuralElementsExporter.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 
-namespace ClassLibrary1.Helpers
+namespace StructuralElementsExporter.Helpers
 {
     public class JsonParser
     {

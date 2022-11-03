@@ -10,7 +10,7 @@ using FemDesign.Results;
 using Autodesk.Revit.DB.Electrical;
 using System.Security.Cryptography.X509Certificates;
 
-namespace ClassLibrary1.StructuralAnalysis
+namespace StructuralElementsExporter.StructuralAnalysis
 {
     public class FemDesignProgram
     {

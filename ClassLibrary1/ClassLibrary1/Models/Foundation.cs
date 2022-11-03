@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibrary1.Models
+namespace StructuralElementsExporter.Models
 {
     public class Foundation
     {

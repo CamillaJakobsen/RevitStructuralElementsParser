@@ -14,8 +14,8 @@ using Autodesk.Revit.Creation;
 using System.Xml.Linq;
 using Document = Autodesk.Revit.DB.Document;
 using Application = Autodesk.Revit.ApplicationServices.Application;
-using ClassLibrary1.Models;
-using ClassLibrary1.Helpers;
+using StructuralElementsExporter.Models;
+using StructuralElementsExporter.Helpers;
 using Autodesk.Revit.DB.Structure.StructuralSections;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
@@ -23,8 +23,11 @@ using Autodesk.Revit.DB.Visual;
 using System.Globalization;
 using System.IO;
 using Autodesk.Revit.DB.Structure;
+using Newtonsoft.Json;
+using StructuralElementsExporter.Models.Containers;
 
-namespace ClassLibrary1
+
+namespace StructuralElementsExporter
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -237,6 +240,7 @@ namespace ClassLibrary1
                 structuralElements.AppendLine();
             }
 
+            Decks decks = new Decks();
             // Assigns the revit parameters to the Deck constructor
             foreach (Element element in listOfAllDecks)
             {
@@ -262,14 +266,16 @@ namespace ClassLibrary1
                 double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 3);
 
 
+                Deck deck = new Deck(typeID, materialID, area, thickness);
 
-                //Deck deck = new Deck(typeID, materialID, area, thickness);
+                decks.AddDeck(deck);
+                             
 
-                object[] deck = { typeID, materialID, area, thickness };
+                //object[] deck = { typeID, materialID, area, thickness };
 
 
-                structuralElements.AppendFormat("Deck: typeID id: {0}, materialID: {1}, area: {2}, thickness: {3}", deck);
-                structuralElements.AppendLine();
+                //structuralElements.AppendFormat("Deck: typeID id: {0}, materialID: {1}, area: {2}, thickness: {3}", deck);
+                //structuralElements.AppendLine();
 
             }
 
@@ -284,14 +290,19 @@ namespace ClassLibrary1
                 string materialID = "Concrete";
                 //string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
                 
+                //string materialID = element.FloorType.LookupParameter("Structural Material").AsValueString();
                 
+
 
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
                 //Foundation foundation = new Foundation(typeID, materialID, volume);
 
+                
+
                 object[] foundation = { typeID, materialID, volume };
+
 
 
                 structuralElements.AppendFormat("Foundation: typeID id: {0}, materialID: {1}, volume: {2}", foundation);
@@ -299,10 +310,17 @@ namespace ClassLibrary1
 
             }
 
+            
+            
             File.WriteAllText(@"C:\Users\camil\Documents\StructuralElements.txt", structuralElements.ToString());
 
 
             TaskDialog.Show("Revit", "Succeeded");
+
+            // Lav breakpoint og kopier JSON filen.
+           // JsonConvert.SerializeObject(AllStructuralElements);
+
+
 
             return Result.Succeeded;
             
