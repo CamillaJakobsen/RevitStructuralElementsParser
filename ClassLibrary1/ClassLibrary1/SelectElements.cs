@@ -50,7 +50,7 @@ namespace StructuralElementsExporter
             FilteredElementCollector beam_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allBeams = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
             List<FamilyInstance> listOfAllBeams = beam_collector.WherePasses(allBeams).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
-            
+
             FilteredElementCollector column_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allColumns = new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns);
             List<FamilyInstance> listOfAllColumns = column_collector.WherePasses(allColumns).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
@@ -63,8 +63,8 @@ namespace StructuralElementsExporter
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
 
-            
-            
+
+
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
             {
@@ -92,15 +92,8 @@ namespace StructuralElementsExporter
                     // Change from var to int
                     int typeID = walltype.Id.IntegerValue;
 
-                    //CompoundStructureLayer compoundStructureLayer = 
-                    //string MaterialID = compoundStructureLayer.MaterialId
-
-                    //Hvordan får man Structural material??
-                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                    //var materialID = familyInstance.StructuralMaterialType;              
-                    string materialID = "Concrete";
-                    //WallType.CompoundStructure.Layers
-                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
+                    //Creates Structural material
+                    string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -115,11 +108,6 @@ namespace StructuralElementsExporter
                     ExteriorWall exteriorWall = new ExteriorWall(typeID, materialID, area, thickness);
                     exteriorWalls.AddExteriorWall(exteriorWall);
 
-                    //object[] exteriorWall = { typeID, materialID, area, thickness };
-
-
-                    //structuralElements.AppendFormat("ExteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", exteriorWall);
-                    //structuralElements.AppendLine();
                 }
             }
 
@@ -137,10 +125,8 @@ namespace StructuralElementsExporter
                     // Change from var to int
                     int typeID = walltype.Id.IntegerValue;
 
-                    //Hvordan får man Structural material??
-                    //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                    //var materialID = familyInstance.StructuralMaterialType;              
-                    string materialID = "Concrete";
+                    //Creates Structural material
+                    string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -150,15 +136,9 @@ namespace StructuralElementsExporter
                     WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
                     double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
                     double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
-                    
+
                     InteriorWall interiorWall = new InteriorWall(typeID, materialID, area, thickness);
                     interiorWalls.AddInteriorWall(interiorWall);
-
-                    //object[] interiorWall = { typeID, materialID, area, thickness };
-
-
-                    //structuralElements.AppendFormat("InteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", interiorWall);
-                    //structuralElements.AppendLine();
 
                 }
             }
@@ -172,7 +152,7 @@ namespace StructuralElementsExporter
                 var cast = (Element)familyInstance;
                 int typeID = cast.Id.IntegerValue;
 
-                
+
                 //Maps the material of the beam
                 string materialID = familyInstance.StructuralMaterialType.ToString();
 
@@ -186,12 +166,6 @@ namespace StructuralElementsExporter
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
                 double crossSectionArea = volume / length;
-
-                ////Crosssection area in cm2
-                //string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
-                //string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
-                ////Crosssection area in m2
-                //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
                 Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
                 beams.AddBeam(beam);
@@ -226,20 +200,9 @@ namespace StructuralElementsExporter
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
                 double crossSectionArea = volume / length;
 
-                ////Crosssection area in cm2
-                //string crossSectionAreaString = familyInstance.LookupParameter("A").AsValueString();
-                //string[] crossSectionAreaSplitted = crossSectionAreaString.Split(' ');
-                ////Crosssection area in m2
-                //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
-
                 Column column = new Column(typeID, materialID, length, crossSectionArea);
                 columns.AddColumn(column);
 
-                //object[] column = { typeID, materialID, length, crossSectionArea };
-
-
-                //structuralElements.AppendFormat("Column: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", column);
-                //structuralElements.AppendLine();
             }
 
             Decks decks = new Decks();
@@ -247,18 +210,13 @@ namespace StructuralElementsExporter
             foreach (Element element in listOfAllDecks)
             {
                 // Creates the TypeId
-                
-                // Change from var to int
                 int typeID = element.Id.IntegerValue;
 
                 //Hvordan får man Structural material??
-                //FamilyInstance familyInstance = doc.GetElement(element.GetTypeId()) as FamilyInstance;
-                //var materialID = familyInstance.StructuralMaterialType;              
-                //string materialID = "Concrete";
                 var carsten = (Floor)element;
                 string materialID = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
-                
-                
+
+
                 // Maps the area of the deck
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
                 double area = RoundToSignificantDigits.RoundDigits(area1, 3);
@@ -269,15 +227,8 @@ namespace StructuralElementsExporter
 
 
                 Deck deck = new Deck(typeID, materialID, area, thickness);
-
                 decks.AddDeck(deck);
-                             
 
-                //object[] deck = { typeID, materialID, area, thickness };
-
-
-                //structuralElements.AppendFormat("Deck: typeID id: {0}, materialID: {1}, area: {2}, thickness: {3}", deck);
-                //structuralElements.AppendLine();
 
             }
 
@@ -286,15 +237,10 @@ namespace StructuralElementsExporter
             foreach (Element element in listOfAllFoundation)
             {
 
-                //Creates the TypeId
                 int typeID = element.Id.IntegerValue;
 
-                //Hvordan får man Structural material ??
-                string materialID = "Concrete";
-                //string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsString();
-                
-                //string materialID = element.FloorType.LookupParameter("Structural Material").AsValueString();
-                
+                    
+                string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
 
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
@@ -302,37 +248,24 @@ namespace StructuralElementsExporter
 
                 Foundation foundation = new Foundation(typeID, materialID, volume);
                 foundations.AddFoundation(foundation);
-
-
-                //object[] foundation = { typeID, materialID, volume };
-
-
-
-                //structuralElements.AppendFormat("Foundation: typeID id: {0}, materialID: {1}, volume: {2}", foundation);
-                //structuralElements.AppendLine();
+                
+            
 
             }
 
-            
-            
-            //File.WriteAllText(@"C:\Users\camil\Documents\StructuralElements.txt", structuralElements.ToString());
-
+            // Lav breakpoint og kopier JSON filen.
+            // JsonConvert.SerializeObject(AllStructuralElements);
 
             TaskDialog.Show("Revit", "Succeeded");
-
-            // Lav breakpoint og kopier JSON filen.
-           // JsonConvert.SerializeObject(AllStructuralElements);
+                return Result.Succeeded;
 
 
+            }
 
-            return Result.Succeeded;
-            
 
         }
-        
-
     }
-}
+
 
 
     
