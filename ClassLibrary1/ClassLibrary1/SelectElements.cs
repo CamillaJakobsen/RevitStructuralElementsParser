@@ -44,8 +44,8 @@ namespace StructuralElementsExporter
             FilteredElementCollector wall_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
             List<Wall> listOfAllWalls = wall_collector.WherePasses(allWalls).WhereElementIsNotElementType().Cast<Wall>().ToList();
-            List<Wall> exteriorWalls = new List<Wall>();
-            List<Wall> interiorWalls = new List<Wall>();
+            List<Wall> listOfAllExteriorWalls = new List<Wall>();
+            List<Wall> listOfAllInteriorWalls = new List<Wall>();
 
             FilteredElementCollector beam_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allBeams = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
@@ -63,31 +63,25 @@ namespace StructuralElementsExporter
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
 
-
-            //List<StructuralElements> ListOfAllStructuralElements = new List<StructuralElements>();
-            //StructuralElements structuralElements = new StructuralElements();
             
-            StringBuilder structuralElements = new StringBuilder();
-            //public List<StructuralElement> structuralElements { get; set; }; 
-
             
-
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
             {
                 var test = element.WallType.Function;
                 if (test == WallFunction.Exterior)
                 {
-                    exteriorWalls.Add(element);
+                    listOfAllExteriorWalls.Add(element);
                 }
                 else if (test == WallFunction.Interior)
                 {
-                    interiorWalls.Add(element);
+                    listOfAllInteriorWalls.Add(element);
                 }
             }
 
+            ExteriorWalls exteriorWalls = new ExteriorWalls();
             // Assigns the revit parameters to the Outerwall constructor
-            foreach (Element element in exteriorWalls)
+            foreach (Element element in listOfAllExteriorWalls)
             {
                 var structuralUsage = element.LookupParameter("Structural Usage").AsValueString();
 
@@ -118,17 +112,20 @@ namespace StructuralElementsExporter
                     double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
 
-                    //ExteriorWall exteriorWall = new ExteriorWall(typeID, materialID, area, thickness);
-                    object[] exteriorWall = { typeID, materialID, area, thickness };
+                    ExteriorWall exteriorWall = new ExteriorWall(typeID, materialID, area, thickness);
+                    exteriorWalls.AddExteriorWall(exteriorWall);
+
+                    //object[] exteriorWall = { typeID, materialID, area, thickness };
 
 
-                    structuralElements.AppendFormat("ExteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", exteriorWall);
-                    structuralElements.AppendLine();
+                    //structuralElements.AppendFormat("ExteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", exteriorWall);
+                    //structuralElements.AppendLine();
                 }
             }
 
+            InteriorWalls interiorWalls = new InteriorWalls();
             // Assigns the revit parameters to the Innerwall constructor
-            foreach (Element element in interiorWalls)
+            foreach (Element element in listOfAllInteriorWalls)
             {
                 var structuralUsage = element.LookupParameter("Structural Usage").AsValueString();
 
@@ -153,18 +150,20 @@ namespace StructuralElementsExporter
                     WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
                     double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
                     double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
-
-                    //InteriorWalls interiorWalls = new InnerWall(typeID, materialID, area, thickness);
-
-                    object[] interiorWall = { typeID, materialID, area, thickness };
-
-
-                    structuralElements.AppendFormat("InteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", interiorWall);
-                    structuralElements.AppendLine();
                     
+                    InteriorWall interiorWall = new InteriorWall(typeID, materialID, area, thickness);
+                    interiorWalls.AddInteriorWall(interiorWall);
+
+                    //object[] interiorWall = { typeID, materialID, area, thickness };
+
+
+                    //structuralElements.AppendFormat("InteriorWall: typeID id: {0}, materialID: {1}, area: {2}, Thickness: {3}", interiorWall);
+                    //structuralElements.AppendLine();
+
                 }
             }
 
+            Beams beams = new Beams();
             // Assigns the revit parameters to the Beam constructor
             foreach (FamilyInstance familyInstance in listOfAllBeams)
             {
@@ -194,17 +193,19 @@ namespace StructuralElementsExporter
                 ////Crosssection area in m2
                 //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
-                //Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
+                Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
+                beams.AddBeam(beam);
 
-                object[] beam = { typeID, materialID, length, crossSectionArea };
+                //object[] beam = { typeID, materialID, length, crossSectionArea };
 
 
-                structuralElements.AppendFormat("Beam: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", beam);
-                structuralElements.AppendLine();
-                
+                //structuralElements.AppendFormat("Beam: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", beam);
+                //structuralElements.AppendLine();
+
 
             }
 
+            Columns columns = new Columns();
             // Assigns the revit parameters to the Column constructor
             foreach (FamilyInstance familyInstance in listOfAllColumns)
             {
@@ -231,13 +232,14 @@ namespace StructuralElementsExporter
                 ////Crosssection area in m2
                 //var crossSectionArea = SquaredcmToSquaredm.Convert(Double.Parse(crossSectionAreaSplitted[0].Replace('.', '.'), CultureInfo.InvariantCulture));
 
-                //Column column = new Column(typeID, materialID, length, crossSectionArea);
+                Column column = new Column(typeID, materialID, length, crossSectionArea);
+                columns.AddColumn(column);
 
-                object[] column = { typeID, materialID, length, crossSectionArea };
+                //object[] column = { typeID, materialID, length, crossSectionArea };
 
 
-                structuralElements.AppendFormat("Column: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", column);
-                structuralElements.AppendLine();
+                //structuralElements.AppendFormat("Column: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", column);
+                //structuralElements.AppendLine();
             }
 
             Decks decks = new Decks();
@@ -279,6 +281,7 @@ namespace StructuralElementsExporter
 
             }
 
+            Foundations foundations = new Foundations();
             // Assigns the revit parameters to the Foundation constructor
             foreach (Element element in listOfAllFoundation)
             {
@@ -297,22 +300,22 @@ namespace StructuralElementsExporter
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
-                //Foundation foundation = new Foundation(typeID, materialID, volume);
-
-                
-
-                object[] foundation = { typeID, materialID, volume };
+                Foundation foundation = new Foundation(typeID, materialID, volume);
+                foundations.AddFoundation(foundation);
 
 
+                //object[] foundation = { typeID, materialID, volume };
 
-                structuralElements.AppendFormat("Foundation: typeID id: {0}, materialID: {1}, volume: {2}", foundation);
-                structuralElements.AppendLine();
+
+
+                //structuralElements.AppendFormat("Foundation: typeID id: {0}, materialID: {1}, volume: {2}", foundation);
+                //structuralElements.AppendLine();
 
             }
 
             
             
-            File.WriteAllText(@"C:\Users\camil\Documents\StructuralElements.txt", structuralElements.ToString());
+            //File.WriteAllText(@"C:\Users\camil\Documents\StructuralElements.txt", structuralElements.ToString());
 
 
             TaskDialog.Show("Revit", "Succeeded");

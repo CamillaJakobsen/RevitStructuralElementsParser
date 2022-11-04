@@ -59,6 +59,11 @@
     <Compile Include="Helpers\RoundToSignificantDigits.cs" />
     <Compile Include="Helpers\ImperialToMetricConverter.cs" />
     <Compile Include="Models\AllStructuralElements.cs" />
+    <Compile Include="Models\Containers\Beams.cs" />
+    <Compile Include="Models\Containers\Foundations.cs" />
+    <Compile Include="Models\Containers\ExteriorWalls.cs" />
+    <Compile Include="Models\Containers\InteriorWalls.cs" />
+    <Compile Include="Models\Containers\Columns.cs" />
     <Compile Include="Models\Containers\Decks.cs" />
     <Compile Include="Models\StructuralElement.cs" />
     <Compile Include="SelectElements.cs" />
