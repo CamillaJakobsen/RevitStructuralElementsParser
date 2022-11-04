@@ -8,7 +8,7 @@ namespace StructuralElementsExporter.Models.Containers
 {
     public class Foundations
     {
-        public List<Foundation> FoundationsInModel = new List<Foundation>();
+        public List<object> FoundationsInModel = new List<object>();
 
         public void AddFoundation(Foundation foundation)
         {

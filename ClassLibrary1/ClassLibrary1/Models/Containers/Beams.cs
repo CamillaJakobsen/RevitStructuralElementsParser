@@ -8,7 +8,7 @@ namespace StructuralElementsExporter.Models.Containers
 {
     public class Beams
     {
-        public List<Beam> BeamsInModel = new List<Beam>();
+        public List<object> BeamsInModel = new List<object>();
 
         public void AddBeam(Beam beam)
         {

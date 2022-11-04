@@ -9,7 +9,7 @@ namespace StructuralElementsExporter.Models.Containers
 {
     public class Columns
     {
-        public List<Column> ColumnsInModel = new List<Column>();
+        public List<object> ColumnsInModel = new List<object>();
 
         public void AddColumn(Column column)
         {

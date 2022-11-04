@@ -253,8 +253,19 @@ namespace StructuralElementsExporter
 
             }
 
+            // Add all structural elements to a Dictionary of Structuralelements
+            Dictionary<string, List<object>> structuralElements = new Dictionary<string, List<object>>();
+
+            structuralElements.Add("Beam", beams.BeamsInModel);
+            structuralElements.Add("Column", columns.ColumnsInModel);
+            structuralElements.Add("Deck", decks.DecksInModel);
+            structuralElements.Add("ExteriorWall", exteriorWalls.ExteriorWallsInModel);
+            structuralElements.Add("InteriorWall", interiorWalls.InteriorWallsInModel);
+            structuralElements.Add("Foundation", foundations.FoundationsInModel);
+
+
             // Lav breakpoint og kopier JSON filen.
-            // JsonConvert.SerializeObject(AllStructuralElements);
+            JsonConvert.SerializeObject(structuralElements);
 
             TaskDialog.Show("Revit", "Succeeded");
                 return Result.Succeeded;

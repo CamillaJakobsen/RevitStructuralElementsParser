@@ -9,7 +9,7 @@ namespace StructuralElementsExporter.Models.Containers
 {
     public class ExteriorWalls
     {
-        public List<ExteriorWall> ExteriorWallsInModel = new List<ExteriorWall>();
+        public List<object> ExteriorWallsInModel = new List<object>();
 
         public void AddExteriorWall(ExteriorWall exteriorWall)
         {

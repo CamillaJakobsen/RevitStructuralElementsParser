@@ -10,7 +10,7 @@ namespace StructuralElementsExporter.Models.Containers
     public class Decks
     {
         
-        public List<Deck> DecksInModel = new List<Deck>();
+        public List<object> DecksInModel = new List<object>();
 
         public void AddDeck(Deck deck)
         {
