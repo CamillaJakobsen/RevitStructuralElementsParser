@@ -170,12 +170,6 @@ namespace StructuralElementsExporter
                 Beam beam = new Beam(typeID, materialID, length, crossSectionArea);
                 beams.AddBeam(beam);
 
-                //object[] beam = { typeID, materialID, length, crossSectionArea };
-
-
-                //structuralElements.AppendFormat("Beam: typeID id: {0}, materialID: {1}, length: {2}, crossSectionArea: {3}", beam);
-                //structuralElements.AppendLine();
-
 
             }
 
@@ -267,9 +261,9 @@ namespace StructuralElementsExporter
             // Lav breakpoint og kopier JSON filen.
             JsonConvert.SerializeObject(structuralElements);
 
-            TaskDialog.Show("Revit", "Succeeded");
-                return Result.Succeeded;
+            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements));
 
+                return Result.Succeeded;
 
             }
 
