@@ -78,3 +78,5 @@ C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\bin\Debug
 C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\bin\Debug\zh-CN\AdWindows.resources.dll
 C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\bin\Debug\zh-TW\AdWindows.resources.dll
 C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\obj\Debug\StructuralElementsExporter.csproj.CopyComplete
+C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\obj\Debug\Interop.RobotOM.dll
+C:\Users\camil\source\repos\project_master\ClassLibrary1\ClassLibrary1\obj\Debug\StructuralElementsExporter.csproj.ResolveComReference.cache

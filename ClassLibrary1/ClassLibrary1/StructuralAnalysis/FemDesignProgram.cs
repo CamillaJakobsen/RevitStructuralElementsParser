@@ -19,7 +19,6 @@ namespace StructuralElementsExporter.StructuralAnalysis
             string path = @"C:\Users\camil\FEM-design_API_test.struxml";
             string outFolder = @"C:\Users\camil\FemDesign_API_test";
             string tempPath = outFolder + "temp.struxml";
-            
             Model model = Model.DeserializeFromFilePath(path);
             double concreteCost = 20;
             double reinforcementCost = 70;
