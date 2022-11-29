@@ -155,8 +155,8 @@ namespace StructuralElementsExporter
 
                 //Maps the material of the beam
                 string material = familyInstance.StructuralMaterialType.ToString();
+
                 string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
-                
                 string quality;
                 
                 if (test == "")
@@ -236,7 +236,22 @@ namespace StructuralElementsExporter
                 int typeID = cast.Id.IntegerValue;
 
                 //Maps the material of the beam
-                string materialID = familyInstance.StructuralMaterialType.ToString();
+                string material = familyInstance.StructuralMaterialType.ToString();
+
+                string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                string quality;
+
+                if (test == "")
+                {
+                    quality = "Not defined";
+
+                }
+                else
+                {
+                    var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                    quality = quality1.Name.ToString();
+
+                }
 
 
                 //Maps the length of the column
@@ -246,9 +261,10 @@ namespace StructuralElementsExporter
                 ////Maps the crossSectionArea based on volume and length
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
-                
 
-                Column column = new Column(typeID, materialID, length, volume);
+                double weight = 0;
+
+                Column column = new Column(typeID, material, quality, length, volume, weight);
                 columns.AddColumn(column);
 
             }
