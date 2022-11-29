@@ -93,7 +93,22 @@ namespace StructuralElementsExporter
                     int typeID = walltype.Id.IntegerValue;
 
                     //Creates Structural material
-                    string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
+                    string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                    string quality;
+
+                    if (test == "")
+                    {
+                        quality = "Not defined";
+
+                    }
+                    else
+                    {
+                        var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                        quality = quality1.Name.ToString();
+
+                    }
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -105,7 +120,7 @@ namespace StructuralElementsExporter
                     double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
 
-                    ExteriorWall exteriorWall = new ExteriorWall(typeID, materialID, area, thickness);
+                    ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness);
                     exteriorWalls.AddExteriorWall(exteriorWall);
 
                 }
@@ -126,7 +141,22 @@ namespace StructuralElementsExporter
                     int typeID = walltype.Id.IntegerValue;
 
                     //Creates Structural material
-                    string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
+                    string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                    string quality;
+
+                    if (test == "")
+                    {
+                        quality = "Not defined";
+
+                    }
+                    else
+                    {
+                        var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                        quality = quality1.Name.ToString();
+
+                    }
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -137,7 +167,7 @@ namespace StructuralElementsExporter
                     double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
                     double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
 
-                    InteriorWall interiorWall = new InteriorWall(typeID, materialID, area, thickness);
+                    InteriorWall interiorWall = new InteriorWall(typeID, material, quality, area, thickness);
                     interiorWalls.AddInteriorWall(interiorWall);
 
                 }
