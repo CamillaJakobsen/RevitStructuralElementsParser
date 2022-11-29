@@ -142,8 +142,9 @@ namespace StructuralElementsExporter
 
                     //Creates Structural material
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    var cast = (FamilyInstance)element;
 
-                    string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                    string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
                     string quality;
 
                     if (test == "")
@@ -153,7 +154,7 @@ namespace StructuralElementsExporter
                     }
                     else
                     {
-                        var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
                         quality = quality1.Name.ToString();
 
                     }
@@ -308,8 +309,23 @@ namespace StructuralElementsExporter
 
                 //Hvordan får man Structural material??
                 var carsten = (Floor)element;
-                string materialID = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
+                string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
+                var cast = (FamilyInstance)element;
+                string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                string quality;
+
+                if (test == "")
+                {
+                    quality = "Not defined";
+
+                }
+                else
+                {
+                    var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
+                    quality = quality1.Name.ToString();
+
+                }
 
                 // Maps the area of the deck
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
@@ -320,7 +336,7 @@ namespace StructuralElementsExporter
                 double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 3);
 
 
-                Deck deck = new Deck(typeID, materialID, area, thickness);
+                Deck deck = new Deck(typeID, material, quality, area, thickness);
                 decks.AddDeck(deck);
 
 
@@ -336,12 +352,28 @@ namespace StructuralElementsExporter
                     
                     int typeID = element.Id.IntegerValue;
 
-                    string materialID = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
+                    var cast = (FamilyInstance)element;
+                    string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                    string quality;
+
+                    if (testQuality == "")
+                    {
+                        quality = "Not defined";
+
+                    }
+                    else
+                    {
+                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
+                        quality = quality1.Name.ToString();
+
+                    }
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
-                    Foundation foundation = new Foundation(typeID, materialID, volume);
+                    Foundation foundation = new Foundation(typeID, material, quality, volume);
                     foundations.AddFoundation(foundation);
 
                 }

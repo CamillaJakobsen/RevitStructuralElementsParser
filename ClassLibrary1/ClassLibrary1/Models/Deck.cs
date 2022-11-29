@@ -19,7 +19,8 @@ namespace StructuralElementsExporter.Models
     {
         // Declaring variables
         public int TypeID { get; set; }
-        public string MaterialID { get; set; }
+        public string Material { get; set; }
+        public string Quality { get; set; }  
         public double Area { get; set; }
         public double Thickness { get; set; }
         //public Dictionary<string, string> MaterialProperties { get; set; } = new Dictionary<string, string>();
@@ -27,10 +28,11 @@ namespace StructuralElementsExporter.Models
 
 
         // Constructor: Starts with lower case letter
-        public Deck(int typeID, string materialID, double area, double thickness)
+        public Deck(int typeID, string material, string quality, double area, double thickness)
         {
             TypeID = typeID;
-            MaterialID = materialID;
+            Material = material;
+            Quality = quality;
             Area = area;
             Thickness = thickness;
 
