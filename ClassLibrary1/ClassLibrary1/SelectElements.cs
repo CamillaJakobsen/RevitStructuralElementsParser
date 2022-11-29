@@ -1,31 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.DB.Architecture;
-using System.Windows.Forms;
-using Autodesk.Revit.Creation;
-using System.Xml.Linq;
 using Document = Autodesk.Revit.DB.Document;
-using Application = Autodesk.Revit.ApplicationServices.Application;
 using StructuralElementsExporter.Models;
 using StructuralElementsExporter.Helpers;
-using Autodesk.Revit.DB.Structure.StructuralSections;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography.X509Certificates;
-using Autodesk.Revit.DB.Visual;
-using System.Globalization;
 using System.IO;
-using Autodesk.Revit.DB.Structure;
 using Newtonsoft.Json;
 using StructuralElementsExporter.Models.Containers;
-using System.Runtime.CompilerServices;
 
 namespace StructuralElementsExporter
 {
@@ -95,7 +79,9 @@ namespace StructuralElementsExporter
                     //Creates Structural material
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
-                    string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                    var cast = (FamilyInstance)element;
+                    string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                    
                     string quality;
 
                     if (test == "")
@@ -105,7 +91,7 @@ namespace StructuralElementsExporter
                     }
                     else
                     {
-                        var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
                         quality = quality1.Name.ToString();
 
                     }
@@ -188,12 +174,17 @@ namespace StructuralElementsExporter
                 string material = familyInstance.StructuralMaterialType.ToString();
 
                 string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                string test2 = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                 string quality;
                 
-                if (test == "")
+                if (test == "" && test2 == "")
                 {
                     quality = "Not defined";
 
+                }
+                else if (test == "" && test2 != "")
+                {
+                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                 }
                 else
                 {
@@ -383,12 +374,27 @@ namespace StructuralElementsExporter
                     int typeID = element.Id.IntegerValue;
 
                     var cast = (FamilyInstance)element;
-                    string materialID = cast.LookupParameter("Structural Material").AsValueString();
+                    string material = cast.LookupParameter("Structural Material").AsValueString();
+
+                    string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                    string quality;
+
+                    if (testQuality == "")
+                    {
+                        quality = "Not defined";
+
+                    }
+                    else
+                    {
+                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
+                        quality = quality1.Name.ToString();
+
+                    }
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
-                    Foundation foundation = new Foundation(typeID, materialID, volume);
+                    Foundation foundation = new Foundation(typeID, material, quality, volume);
                     foundations.AddFoundation(foundation);
                 }
                 
@@ -414,11 +420,6 @@ namespace StructuralElementsExporter
             return Result.Succeeded;
 
             }
-
-        private static void NaterialID()
-        {
-
-        }
 
 
     }
