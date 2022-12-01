@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StructuralElementsExporter.Models.Beam">
+    <Position X="1.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAABAACAAAAAgAAIAAAAAAAA=</HashCode>
+      <FileName>Models\Beam.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Column">
+    <Position X="2.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAABAACAAAAAgAAIAAAAAAAA=</HashCode>
+      <FileName>Models\Column.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Deck">
+    <Position X="4.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>Models\Deck.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.ExteriorWall">
+    <Position X="5.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>Models\ExteriorWall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.InteriorWall">
+    <Position X="7.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>Models\InteriorWall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Foundation">
+    <Position X="8.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAAAAAAAAAAAgAAIAAAAAAAA=</HashCode>
+      <FileName>Models\Foundation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.Beams">
+    <Position X="1.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Models\Containers\Beams.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.Columns">
+    <Position X="2.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Containers\Columns.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.Decks">
+    <Position X="4.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Containers\Decks.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.ExteriorWalls">
+    <Position X="5.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Containers\ExteriorWalls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.Foundations">
+    <Position X="8.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Containers\Foundations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.Containers.InteriorWalls">
+    <Position X="7.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\Containers\InteriorWalls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructuralElementsExporter.SelectElements">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SelectElements.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="StructuralElementsExporter.Models.StructuralElements">
+    <Position X="5" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAACAAAABAAAAAIAAAAAAAAAAAAACACAAAAACAA=</HashCode>
+      <FileName>Models\Containers\StructuralElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

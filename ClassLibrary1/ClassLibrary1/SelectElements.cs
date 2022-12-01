@@ -10,6 +10,11 @@ using StructuralElementsExporter.Helpers;
 using System.IO;
 using Newtonsoft.Json;
 using StructuralElementsExporter.Models.Containers;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
+using System.Security.Policy;
+using FemDesign.Shells;
 
 namespace StructuralElementsExporter
 {
@@ -79,8 +84,8 @@ namespace StructuralElementsExporter
                     //Creates Structural material
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
-                    var cast = (FamilyInstance)element;
-                    string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+
+                    string test = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                     
                     string quality;
 
@@ -91,8 +96,8 @@ namespace StructuralElementsExporter
                     }
                     else
                     {
-                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
-                        quality = quality1.Name.ToString();
+                        quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
 
                     }
 
@@ -128,9 +133,9 @@ namespace StructuralElementsExporter
 
                     //Creates Structural material
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    var cast = (FamilyInstance)element;
+                    
 
-                    string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                    string test = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                     string quality;
 
                     if (test == "")
@@ -140,8 +145,8 @@ namespace StructuralElementsExporter
                     }
                     else
                     {
-                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
-                        quality = quality1.Name.ToString();
+                        
+                        quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     }
 
@@ -174,7 +179,7 @@ namespace StructuralElementsExporter
                 string material = familyInstance.StructuralMaterialType.ToString();
 
                 string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
-                string test2 = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                string test2 = doc.GetElement(cast.GetTypeId()).Name;
                 string quality;
                 
                 if (test == "" && test2 == "")
@@ -184,7 +189,7 @@ namespace StructuralElementsExporter
                 }
                 else if (test == "" && test2 != "")
                 {
-                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    quality = test2;
                 }
                 else
                 {
@@ -210,42 +215,8 @@ namespace StructuralElementsExporter
 
                 double weight = 0;
 
-                //if (material == "Steel" || material == "steel")
-                //{
-
-                //    double weight2 = familyInstance.GetParameters("G");
-                   
-
-
-                //    //var prøveprøve = doc.GetElement(cast.LookupParameter("")
-
-
-                //    weight = 100000 * weight2;   
-
-                //}
-                //else
-                //{
-                //    weight = 0;
-
-                //}
-
-                //double weight = 0;
-                
-
-
-                
-
-
-
-                //string weight2 = doc.GetElement(familyInstance.GetTypeId()).LookupParameter("A").AsValueString();
-                //string[] weight3 = weight2.Split(' ');
-                //double weight = Double.Parse(weight3[0]) * length;
-
-
-
                 Beam beam = new Beam(typeID, material, quality, length, volume, weight);
                 beams.AddBeam(beam);
-
 
             }
 
@@ -261,12 +232,17 @@ namespace StructuralElementsExporter
                 string material = familyInstance.StructuralMaterialType.ToString();
 
                 string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                string test2 = doc.GetElement(cast.GetTypeId()).Name;
                 string quality;
 
-                if (test == "")
+                if (test == "" && test2 == "")
                 {
                     quality = "Not defined";
 
+                }
+                else if (test == "" && test2 != "")
+                {
+                    quality = test2;
                 }
                 else
                 {
@@ -295,41 +271,46 @@ namespace StructuralElementsExporter
             // Assigns the revit parameters to the Deck constructor
             foreach (Element element in listOfAllDecks)
             {
+                var carsten = (Floor)element;
+                
                 // Creates the TypeId
                 int typeID = element.Id.IntegerValue;
 
                 //Hvordan får man Structural material??
-                var carsten = (Floor)element;
-                string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
-
-                var cast = (FamilyInstance)element;
-                string test = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
-                string quality;
-
-                if (test == "")
-                {
-                    quality = "Not defined";
-
-                }
-                else
-                {
-                    var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
-                    quality = quality1.Name.ToString();
-
-                }
+                string quality = "Not defined";
 
                 // Maps the area of the deck
                 double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
                 double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
-                // Maps the thickness of the wall
-                double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(element.get_Parameter(BuiltInParameter.FLOOR_ATTR_THICKNESS_PARAM).AsDouble());
-                double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 3);
+                //if material consists of more than two layers
+                CompoundStructure deckLayers = carsten.FloorType.GetCompoundStructure();
+                List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(deckLayers.GetLayers());
 
+                string material;
+                double thickness;
 
-                Deck deck = new Deck(typeID, material, quality, area, thickness);
-                decks.AddDeck(deck);
+                foreach (CompoundStructureLayer layer in layers)
+                {
+                string testLayer = layer.Function.ToString();
 
+                if (testLayer == "Structure")
+                {
+                    Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+
+                    material = structuralLayerDeck.Name; 
+                    thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+
+                    Deck deck = new Deck(typeID, material, quality, area, thickness);
+                    decks.AddDeck(deck);
+
+                }
+                    
+                }
+
+             
+                
 
             }
 
@@ -361,6 +342,8 @@ namespace StructuralElementsExporter
 
                     }
 
+                    //string quality = "Not defined";
+
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
@@ -372,9 +355,11 @@ namespace StructuralElementsExporter
                 {
 
                     int typeID = element.Id.IntegerValue;
-
+                    
                     var cast = (FamilyInstance)element;
-                    string material = cast.LookupParameter("Structural Material").AsValueString();
+                    string material = cast.StructuralMaterialType.ToString();
+                    //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
 
                     string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
                     string quality;
@@ -402,28 +387,20 @@ namespace StructuralElementsExporter
             }
 
             // Add all structural elements to a Dictionary of Structuralelements
-            Dictionary<string, List<object>> structuralElements = new Dictionary<string, List<object>>();
-
-            structuralElements.Add("Beam", beams.BeamsInModel);
-            structuralElements.Add("Column", columns.ColumnsInModel);
-            structuralElements.Add("Deck", decks.DecksInModel);
-            structuralElements.Add("ExteriorWall", exteriorWalls.ExteriorWallsInModel);
-            structuralElements.Add("InteriorWall", interiorWalls.InteriorWallsInModel);
-            structuralElements.Add("Foundation", foundations.FoundationsInModel);
-
+            StructuralElements structuralElements = new StructuralElements();
 
             // Lav breakpoint og kopier JSON filen.
-            JsonConvert.SerializeObject(structuralElements);
+            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations));
 
-            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements));
+            //File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
 
             return Result.Succeeded;
 
-            }
+        }
 
 
     }
-    }
+}
 
 
 

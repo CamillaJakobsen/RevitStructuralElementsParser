@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Containers\StructuralElements.cs" />
     <Compile Include="Helpers\JsonParser.cs" />
     <Compile Include="Helpers\SquaredcmToSquaredm.cs" />
     <Compile Include="Helpers\RoundToSignificantDigits.cs" />
@@ -159,6 +160,7 @@
     <Content Include="obj\Debug\ClassLibrary1.pdb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="obj\Debug\ClassLibrary1.csproj.AssemblyReference.cache" />
     <None Include="obj\Debug\ClassLibrary1.csproj.CopyComplete" />
     <None Include="obj\Debug\ClassLibrary1.csproj.CoreCompileInputs.cache" />
