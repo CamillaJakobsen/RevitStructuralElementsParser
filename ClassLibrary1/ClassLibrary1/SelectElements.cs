@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using FemDesign.Shells;
+using File = System.IO.File;
 
 namespace StructuralElementsExporter
 {
@@ -326,23 +327,23 @@ namespace StructuralElementsExporter
 
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
-                    var cast = (FamilyInstance)element;
-                    string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
-                    string quality;
+                    //var cast = (FamilyInstance)element;
+                    //string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
+                    //string quality;
 
-                    if (testQuality == "")
-                    {
-                        quality = "Not defined";
+                    //if (testQuality == "")
+                    //{
+                    //    quality = "Not defined";
 
-                    }
-                    else
-                    {
-                        var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
-                        quality = quality1.Name.ToString();
+                    //}
+                    //else
+                    //{
+                    //    var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
+                    //    quality = quality1.Name.ToString();
 
-                    }
+                    //}
 
-                    //string quality = "Not defined";
+                    string quality = "Not defined";
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
@@ -390,9 +391,9 @@ namespace StructuralElementsExporter
             StructuralElements structuralElements = new StructuralElements();
 
             // Lav breakpoint og kopier JSON filen.
-            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations));
+            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations), (Formatting)1);
 
-            //File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
+            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
 
             return Result.Succeeded;
 
