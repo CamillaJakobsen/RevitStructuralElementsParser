@@ -93,9 +93,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="StructuralElementsExporter.Models.StructuralElements">
-    <Position X="5" Y="2.75" Width="1.75" />
+    <Position X="2.5" Y="1.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>IAAAAAACAAAABAAAAAIAAAAAAAAAAAAACACAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Containers\StructuralElements.cs</FileName>
     </TypeIdentifier>
   </Class>

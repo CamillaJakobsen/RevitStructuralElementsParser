@@ -47,7 +47,7 @@ namespace StructuralElementsExporter
 
             FilteredElementCollector deck_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allDecks = new ElementCategoryFilter(BuiltInCategory.OST_Floors);
-            List<Floor> listOfAllDecks = deck_collector.WherePasses(allDecks).WhereElementIsNotElementType().Cast<Floor>().ToList();
+            List<Element> listOfAllDecks = deck_collector.WherePasses(allDecks).WhereElementIsNotElementType().Cast<Element>().ToList();
 
             FilteredElementCollector foundation_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
@@ -98,7 +98,6 @@ namespace StructuralElementsExporter
                     else
                     {
                         quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-
 
                     }
 
@@ -272,46 +271,49 @@ namespace StructuralElementsExporter
             // Assigns the revit parameters to the Deck constructor
             foreach (Element element in listOfAllDecks)
             {
-                var carsten = (Floor)element;
-                
-                // Creates the TypeId
-                int typeID = element.Id.IntegerValue;
-
-                //Hvordan får man Structural material??
-                string quality = "Not defined";
-
-                // Maps the area of the deck
-                double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                double area = RoundToSignificantDigits.RoundDigits(area1, 3);
-                //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
-
-                //if material consists of more than two layers
-                CompoundStructure deckLayers = carsten.FloorType.GetCompoundStructure();
-                List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(deckLayers.GetLayers());
-
-                string material;
-                double thickness;
-
-                foreach (CompoundStructureLayer layer in layers)
+                if (element is Floor)
                 {
-                string testLayer = layer.Function.ToString();
+                    // Creates the TypeId
+                    int typeID = element.Id.IntegerValue;
 
-                if (testLayer == "Structure")
-                {
-                    Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
 
-                    material = structuralLayerDeck.Name; 
-                    thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+                    //Hvordan får man Structural material??
+                    string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
-                    Deck deck = new Deck(typeID, material, quality, area, thickness);
-                    decks.AddDeck(deck);
+                    // Maps the area of the deck
+                    double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
+                    FloorType carsten = doc.GetElement(element.GetTypeId()) as FloorType;
+
+                    //if material consists of more than two layers
+                    CompoundStructure deckLayers = carsten.GetCompoundStructure();
+
+                    List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(deckLayers.GetLayers());
+
+                    string material;
+                    double thickness;
+
+                    foreach (CompoundStructureLayer layer in layers)
+                    {
+                        string testLayer = layer.Function.ToString();
+
+                        if (testLayer == "Structure")
+                        {
+                            Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+
+                            material = structuralLayerDeck.Name;
+                            thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+
+                            Deck deck = new Deck(typeID, material, quality, area, thickness);
+                            decks.AddDeck(deck);
+
+                        }
+
+                    }
                 }
-                    
-                }
 
-             
-                
 
             }
 
