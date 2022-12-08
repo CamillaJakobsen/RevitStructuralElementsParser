@@ -322,36 +322,55 @@ namespace StructuralElementsExporter
             foreach (Element element in listOfAllFoundation)
             {
                 var test = element.GetType().Name;
-                if ((test == "WallFoundation") || (test == "Floor"))
+                if (test == "WallFoundation")
                 {
-                    
                     int typeID = element.Id.IntegerValue;
 
-                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-
-                    //var cast = (FamilyInstance)element;
-                    //string testQuality = Convert.ToString(doc.GetElement(cast.StructuralMaterialId) as Material);
-                    //string quality;
-
-                    //if (testQuality == "")
-                    //{
-                    //    quality = "Not defined";
-
-                    //}
-                    //else
-                    //{
-                    //    var quality1 = doc.GetElement(cast.StructuralMaterialId) as Material;
-                    //    quality = quality1.Name.ToString();
-
-                    //}
-
-                    string quality = "Not defined";
+                    string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
+                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
                     Foundation foundation = new Foundation(typeID, material, quality, volume);
                     foundations.AddFoundation(foundation);
+
+                }
+                else if (test == "Floor")
+                {
+                    int typeID = element.Id.IntegerValue;
+
+                    string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+
+                    double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+
+                    FloorType carsten = doc.GetElement(element.GetTypeId()) as FloorType;
+
+                    //if material consists of more than two layers
+                    CompoundStructure deckLayers = carsten.GetCompoundStructure();
+
+                    List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(deckLayers.GetLayers());
+
+                    string material;
+
+                    foreach (CompoundStructureLayer layer in layers)
+                    {
+                        string testLayer = layer.Function.ToString();
+
+                        if (testLayer == "Structure")
+                        {
+                            Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+
+                            material = structuralLayerDeck.Name;
+
+                            Foundation foundation = new Foundation(typeID, material, quality, volume);
+                            foundations.AddFoundation(foundation);
+
+                        }
+
+                    }
 
                 }
                 else if (test == "FamilyInstance")
