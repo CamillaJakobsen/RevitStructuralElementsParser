@@ -1,5 +1,4 @@
-﻿using FemDesign.Bars;
-using StructuralElementsExporter.Models.Containers;
+﻿using StructuralElementsExporter.Models.Containers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

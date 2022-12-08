@@ -14,8 +14,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
-using FemDesign.Shells;
 using File = System.IO.File;
+
 
 namespace StructuralElementsExporter
 {
@@ -83,37 +83,37 @@ namespace StructuralElementsExporter
                     int typeID = walltype.Id.IntegerValue;
 
                     //Creates Structural material
-                    string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-
-
-                    string test = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    
-                    string quality;
-
-                    if (test == "")
-                    {
-                        quality = "Not defined";
-
-                    }
-                    else
-                    {
-                        quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-
-                    }
+                    string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
                     double area = RoundToSignificantDigits.RoundDigits(area1, 3);
 
-                    // Maps the thickness of the wall
-                    WallType wallType = doc.GetElement(element.GetTypeId()) as WallType;
-                    double thickness1 = ImperialToMetricConverter.ConvertFromFeetToMeters(wallType.Width);
-                    double thickness = RoundToSignificantDigits.RoundDigits(thickness1, 2);
+                    //if material consists of more than one layer
+                    CompoundStructure wallLayers = walltype.GetCompoundStructure();
 
+                    List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(wallLayers.GetLayers());
 
-                    ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness);
-                    exteriorWalls.AddExteriorWall(exteriorWall);
+                    string material;
+                    double thickness;
 
+                    foreach (CompoundStructureLayer layer in layers)
+                    {
+                        string testLayer = layer.Function.ToString();
+
+                        if (testLayer == "Structure")
+                        {
+                            Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+
+                            material = structuralLayerDeck.Name;
+                            thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+
+                            ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness);
+                            exteriorWalls.AddExteriorWall(exteriorWall);
+
+                        }
+
+                    }
                 }
             }
 

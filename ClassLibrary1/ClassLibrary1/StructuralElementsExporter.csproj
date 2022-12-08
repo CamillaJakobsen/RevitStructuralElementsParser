@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FemDesign.Core, Version=21.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FemDesign.Core.21.4.0\lib\net472\FemDesign.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -76,10 +73,7 @@
     <Compile Include="Models\Column.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StructuralAnalysis\Materials.cs" />
-    <Compile Include="StructuralAnalysis\Material.cs" />
     <Compile Include="StructuralAnalysis\RobotProgram.cs" />
-    <Compile Include="StructuralAnalysis\FemDesignProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\AddInManager.dll" />
