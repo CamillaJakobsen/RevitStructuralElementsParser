@@ -426,37 +426,17 @@ namespace StructuralElementsExporter
                 //Maps the material of the beam
                 string material = "Steel";
 
-                FamilyInstance familyInstance = (FamilyInstance)element;
-
-                string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
-                string test2 = doc.GetElement(element.GetTypeId()).Name;
-                string quality;
-
-                if (test == "" && test2 == "")
-                {
-                    quality = "Not defined";
-
-                }
-                else if (test == "" && test2 != "")
-                {
-                    quality = test2;
-                }
-                else
-                {
-                    var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
-                    quality = quality1.Name.ToString();
-
-                }
-
-                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                string quality = doc.GetElement(element.GetTypeId()).Name;
+                
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.LookupParameter("Reinforcement Volume").AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
 
-                double weight = 0;
+                double weight = WeightOfSteel.Convert(volume);
 
-                Beam beam = new Beam(typeID, material, quality, volume, weight);
-                beams.AddBeam(beam);
+                Reinforcement reinforcement = new Reinforcement(typeID, material, quality, weight);
+                reinforcements.AddReinforcement(reinforcement);
 
             }
 

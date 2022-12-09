@@ -13,17 +13,15 @@ namespace StructuralElementsExporter.Models
         public string Material { get; set; }
 
         public string Quality { get; set; }
-        public double Volume { get; set; }
 
         public double Weight { get; set; }
 
         // Constructor: Starts with lower case letter
-        public Reinforcement(int typeID, string material, string quality, double volume, double weight)
+        public Reinforcement(int typeID, string material, string quality, double weight)
         {
             TypeID = typeID;
             Material = material;
             Quality = quality;
-            Volume = volume;
             Weight = weight;
 
         }
