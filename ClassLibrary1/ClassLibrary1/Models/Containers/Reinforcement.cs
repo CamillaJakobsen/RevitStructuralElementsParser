@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClassLibrary1.Models.Containers
+{
+    public class Reinforcement
+    {
+        // Declaring variables
+        public int TypeID { get; set; }
+        public string Material { get; set; }
+
+        public string Quality { get; set; }
+
+        public double Weight { get; set; }
+
+        // Constructor: Starts with lower case letter
+        public Reinforcement(int typeID, string material, string quality, double weight)
+        {
+            TypeID = typeID;
+            Material = material;
+            Quality = quality;
+            Weight = weight;
+
+        }
+    }
+}

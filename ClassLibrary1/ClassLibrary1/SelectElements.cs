@@ -53,6 +53,9 @@ namespace StructuralElementsExporter
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
 
+            FilteredElementCollector reinforcement_collector = new FilteredElementCollector(doc);
+            ElementCategoryFilter allReinforcement = new ElementCategoryFilter(BuiltInCategory.OST_Rebar);
+            List<Element> listOfAllReinforcement = reinforcement_collector.WherePasses(allReinforcement).WhereElementIsNotElementType().Cast<Element>().ToList();
 
 
             // Creates a Lists of all exterior and interior walls 
@@ -410,6 +413,62 @@ namespace StructuralElementsExporter
                 
 
             }
+
+            Reinforcement reinforcement = new Reinforcement();
+            // Assigns the revit parameters to the Beam constructor
+            foreach (FamilyInstance familyInstance in listOfAllBeams)
+            {
+
+                // Creates the TypeId
+                var cast = (Element)familyInstance;
+                int typeID = cast.Id.IntegerValue;
+
+
+                //Maps the material of the beam
+                string material = familyInstance.StructuralMaterialType.ToString();
+
+                string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
+                string test2 = doc.GetElement(cast.GetTypeId()).Name;
+                string quality;
+
+                if (test == "" && test2 == "")
+                {
+                    quality = "Not defined";
+
+                }
+                else if (test == "" && test2 != "")
+                {
+                    quality = test2;
+                }
+                else
+                {
+                    var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
+                    quality = quality1.Name.ToString();
+
+                }
+
+
+                //Maps the length of the beam
+                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
+                //Alternative way to get length
+                //var lengthprøve = ImperialToMetricConverter.ConvertFromFeetToMeters(cast.LookupParameter("Length").AsDouble());
+                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
+
+
+                ////Maps the crossSectionArea based on the volume and the length
+                ///
+                double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
+                //Alternative way to get volume
+                //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+
+                double weight = 0;
+
+                Beam beam = new Beam(typeID, material, quality, length, volume, weight);
+                beams.AddBeam(beam);
+
+            }
+
 
             // Add all structural elements to a Dictionary of Structuralelements
             StructuralElements structuralElements = new StructuralElements();
