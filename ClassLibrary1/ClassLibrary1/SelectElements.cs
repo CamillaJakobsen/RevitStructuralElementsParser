@@ -445,9 +445,9 @@ namespace StructuralElementsExporter
             StructuralElements structuralElements = new StructuralElements();
 
             // Lav breakpoint og kopier JSON filen.
-            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations), (Formatting)1);
+            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations, reinforcements), (Formatting)1);
 
-            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
+            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations, reinforcements)));
 
             return Result.Succeeded;
 
