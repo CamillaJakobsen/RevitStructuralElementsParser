@@ -73,7 +73,6 @@
     <Compile Include="Models\Column.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StructuralAnalysis\RobotProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\AddInManager.dll" />

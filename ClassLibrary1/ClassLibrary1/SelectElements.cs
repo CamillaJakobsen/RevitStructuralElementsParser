@@ -153,9 +153,9 @@ namespace StructuralElementsExporter
 
                         if (testLayer == "Structure")
                         {
-                            Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+                            Material structuralLayerWall = doc.GetElement(layer.MaterialId) as Material;
 
-                            material = structuralLayerDeck.Name;
+                            material = structuralLayerWall.Name;
                             thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
                             InteriorWall interiorWall = new InteriorWall(typeID, material, quality, area, thickness);
