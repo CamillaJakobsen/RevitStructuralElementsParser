@@ -414,21 +414,22 @@ namespace StructuralElementsExporter
 
             }
 
-            Reinforcement reinforcement = new Reinforcement();
+            Reinforcements reinforcements = new Reinforcements();
             // Assigns the revit parameters to the Beam constructor
-            foreach (FamilyInstance familyInstance in listOfAllBeams)
+            foreach (Element element in listOfAllReinforcement)
             {
 
                 // Creates the TypeId
-                var cast = (Element)familyInstance;
-                int typeID = cast.Id.IntegerValue;
 
+                int typeID = element.Id.IntegerValue;
 
                 //Maps the material of the beam
-                string material = familyInstance.StructuralMaterialType.ToString();
+                string material = "Steel";
+
+                FamilyInstance familyInstance = (FamilyInstance)element;
 
                 string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
-                string test2 = doc.GetElement(cast.GetTypeId()).Name;
+                string test2 = doc.GetElement(element.GetTypeId()).Name;
                 string quality;
 
                 if (test == "" && test2 == "")
@@ -447,16 +448,6 @@ namespace StructuralElementsExporter
 
                 }
 
-
-                //Maps the length of the beam
-                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
-                //Alternative way to get length
-                //var lengthprøve = ImperialToMetricConverter.ConvertFromFeetToMeters(cast.LookupParameter("Length").AsDouble());
-                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
-
-
-                ////Maps the crossSectionArea based on the volume and the length
-                ///
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
@@ -464,7 +455,7 @@ namespace StructuralElementsExporter
 
                 double weight = 0;
 
-                Beam beam = new Beam(typeID, material, quality, length, volume, weight);
+                Beam beam = new Beam(typeID, material, quality, volume, weight);
                 beams.AddBeam(beam);
 
             }

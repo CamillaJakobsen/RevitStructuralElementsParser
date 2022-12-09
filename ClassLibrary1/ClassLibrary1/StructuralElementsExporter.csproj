@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Containers\Reinforcement.cs" />
+    <Compile Include="Helpers\WeightOfSteel.cs" />
+    <Compile Include="Models\Containers\Reinforcements.cs" />
+    <Compile Include="Models\Reinforcement.cs" />
     <Compile Include="Models\Containers\StructuralElements.cs" />
     <Compile Include="Helpers\JsonParser.cs" />
     <Compile Include="Helpers\SquaredcmToSquaredm.cs" />

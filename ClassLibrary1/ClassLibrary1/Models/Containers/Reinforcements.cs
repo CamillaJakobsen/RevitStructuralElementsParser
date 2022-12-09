@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibrary1.Models.Containers
+namespace StructuralElementsExporter.Models.Containers
 {
     public class Reinforcements
     {
