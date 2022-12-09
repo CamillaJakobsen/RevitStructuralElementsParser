@@ -213,13 +213,16 @@ namespace StructuralElementsExporter
 
 
                 ////Maps the crossSectionArea based on the volume and the length
-                ///
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
 
                 double weight = 0;
+                if (material.Contains("Steel"))
+                {
+                    weight = WeightOfSteel.Convert(volume);
+                }
 
                 Beam beam = new Beam(typeID, material, quality, length, volume, weight);
                 beams.AddBeam(beam);
@@ -439,7 +442,6 @@ namespace StructuralElementsExporter
                 reinforcements.AddReinforcement(reinforcement);
 
             }
-
 
             // Add all structural elements to a Dictionary of Structuralelements
             StructuralElements structuralElements = new StructuralElements();
