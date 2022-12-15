@@ -178,32 +178,26 @@ namespace StructuralElementsExporter
 
                 // Creates the TypeId
                 var cast = (Element)familyInstance;
-                int typeID = cast.Id.IntegerValue;
+                FamilySymbol familySymbol = doc.GetElement(familyInstance.GetTypeId()) as FamilySymbol;
+                Family family = doc.GetElement(familyInstance.GetTypeId()) as Family;
 
+                int typeID = cast.Id.IntegerValue;
 
                 //Maps the material of the beam
                 string material = familyInstance.StructuralMaterialType.ToString();
 
-                string test = Convert.ToString(doc.GetElement(familyInstance.StructuralMaterialId) as Material);
-                string test2 = doc.GetElement(cast.GetTypeId()).Name;
                 string quality;
-                
-                if (test == "" && test2 == "")
+                if (material == "Wood")
                 {
-                    quality = "Not defined";
-
-                }
-                else if (test == "" && test2 != "")
-                {
-                    quality = test2;
+                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
+                    //quality = familySymbol.FamilyName;
+                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
                 }
                 else
                 {
-                    var quality1 = doc.GetElement(familyInstance.StructuralMaterialId) as Material;
-                    quality = quality1.Name.ToString();
-
+                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                 }
-                
+                               
                 
                 //Maps the length of the beam
                 double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
