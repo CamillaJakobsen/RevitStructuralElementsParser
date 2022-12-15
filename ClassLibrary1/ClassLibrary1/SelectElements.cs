@@ -275,7 +275,7 @@ namespace StructuralElementsExporter
                     weight = WeightOfSteel.Convert(volume);
                 }
 
-                Column column = new Column(typeID, material, quality, length, volume, weight);
+                Column column = new Column(typeID, material, quality, volume, weight);
                 columns.AddColumn(column);
 
             }
