@@ -224,7 +224,7 @@ namespace StructuralElementsExporter
                     weight = WeightOfSteel.Convert(volume);
                 }
 
-                Beam beam = new Beam(typeID, material, quality, length, volume, weight);
+                Beam beam = new Beam(typeID, material, quality, volume, weight);
                 beams.AddBeam(beam);
 
             }
@@ -270,6 +270,10 @@ namespace StructuralElementsExporter
                 double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
 
                 double weight = 0;
+                if (material.Contains("Steel"))
+                {
+                    weight = WeightOfSteel.Convert(volume);
+                }
 
                 Column column = new Column(typeID, material, quality, length, volume, weight);
                 columns.AddColumn(column);
