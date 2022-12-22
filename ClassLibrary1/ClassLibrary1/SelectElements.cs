@@ -46,9 +46,13 @@ namespace StructuralElementsExporter
             List<FamilyInstance> listOfAllColumns = column_collector.WherePasses(allColumns).WhereElementIsNotElementType().Cast<FamilyInstance>().ToList();
 
             FilteredElementCollector deck_collector = new FilteredElementCollector(doc);
+            FilteredElementCollector roof_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allDecks = new ElementCategoryFilter(BuiltInCategory.OST_Floors);
+            ElementCategoryFilter allRoofs = new ElementCategoryFilter(BuiltInCategory.OST_Roofs);
             List<Element> listOfAllDecks = deck_collector.WherePasses(allDecks).WhereElementIsNotElementType().Cast<Element>().ToList();
-
+            List<Element> listOfAllRoofs = roof_collector.WherePasses(allRoofs).WhereElementIsNotElementType().Cast<Element>().ToList();
+            listOfAllDecks.AddRange(listOfAllRoofs);
+                
             FilteredElementCollector foundation_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
@@ -70,6 +74,7 @@ namespace StructuralElementsExporter
                 {
                     listOfAllInteriorWalls.Add(element);
                 }
+
             }
 
             ExteriorWalls exteriorWalls = new ExteriorWalls();
@@ -197,14 +202,6 @@ namespace StructuralElementsExporter
                 {
                     quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                 }
-                               
-                
-                //Maps the length of the beam
-                double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
-                //Alternative way to get length
-                //var lengthprøve = ImperialToMetricConverter.ConvertFromFeetToMeters(cast.LookupParameter("Length").AsDouble());
-                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
-
 
                 ////Maps the crossSectionArea based on the volume and the length
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
@@ -281,7 +278,7 @@ namespace StructuralElementsExporter
 
                     // Maps the area of the deck
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 5);
                     //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
                     FloorType carsten = doc.GetElement(element.GetTypeId()) as FloorType;
@@ -303,6 +300,48 @@ namespace StructuralElementsExporter
                             Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
 
                             material = structuralLayerDeck.Name;
+                            thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+
+                            Deck deck = new Deck(typeID, material, quality, area, thickness);
+                            decks.AddDeck(deck);
+
+                        }
+
+                    }
+                }
+
+                else if (element is FootPrintRoof)
+                {
+                    // Creates the TypeId
+                    int typeID = element.Id.IntegerValue;
+
+
+                    // Maps the area of the deck
+                    double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 5);
+                    //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
+
+                    RoofType carsten = doc.GetElement(element.GetTypeId()) as RoofType;
+
+                    //if material consists of more than two layers
+                    CompoundStructure deckLayers = carsten.GetCompoundStructure();
+
+                    List<CompoundStructureLayer> layers = new List<CompoundStructureLayer>(deckLayers.GetLayers());
+
+                    string material;
+                    string quality;
+                    double thickness;
+
+                    foreach (CompoundStructureLayer layer in layers)
+                    {
+                        string testLayer = layer.Function.ToString();
+
+                        if (testLayer == "Structure")
+                        {
+                            Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
+
+                            material = structuralLayerDeck.Name;
+                            quality = structuralLayerDeck.Name;
                             thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
                             Deck deck = new Deck(typeID, material, quality, area, thickness);
