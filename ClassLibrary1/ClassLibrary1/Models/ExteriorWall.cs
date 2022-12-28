@@ -27,17 +27,19 @@ namespace StructuralElementsExporter.Models
         public string Quality { get; set; }
         public double Area { get; set; }
         public double Thickness { get; set; }
+        public double Weight { get; set; }
 
            
 
             // Constructor: Starts with lower case letter
-            public ExteriorWall(int typeID, string material, string quality, double area, double thickness)
+            public ExteriorWall(int typeID, string material, string quality, double area, double thickness, double weight)
             {
                 TypeID = typeID;
                 Material = material;
                 Quality = quality;
                 Area = area;
                 Thickness = thickness;
+                Weight = weight;
 
             }
 

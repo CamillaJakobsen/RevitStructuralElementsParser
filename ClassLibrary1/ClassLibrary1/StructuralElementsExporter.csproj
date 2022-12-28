@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\WeightOfAluminium.cs" />
     <Compile Include="Helpers\WeightOfSteel.cs" />
     <Compile Include="Models\Containers\Reinforcements.cs" />
     <Compile Include="Models\Reinforcement.cs" />

@@ -16,7 +16,7 @@ using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using File = System.IO.File;
 using Autodesk.Revit.Creation;
-
+using Autodesk.Revit.DB.Structure;
 
 namespace StructuralElementsExporter
 {
@@ -58,10 +58,13 @@ namespace StructuralElementsExporter
             ElementCategoryFilter allFoundation = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFoundation);
             List<Element> listOfAllFoundation = foundation_collector.WherePasses(allFoundation).WhereElementIsNotElementType().Cast<Element>().ToList();
 
-            FilteredElementCollector reinforcement_collector = new FilteredElementCollector(doc);
-            ElementCategoryFilter allReinforcement = new ElementCategoryFilter(BuiltInCategory.OST_Rebar);
-            List<Element> listOfAllReinforcement = reinforcement_collector.WherePasses(allReinforcement).WhereElementIsNotElementType().Cast<Element>().ToList();
-
+            FilteredElementCollector rebar_collector = new FilteredElementCollector(doc);
+            FilteredElementCollector areaReinforcement_collector = new FilteredElementCollector(doc);
+            ElementCategoryFilter allRebar = new ElementCategoryFilter(BuiltInCategory.OST_Rebar);
+            List<Element> listOfAllReinforcement = rebar_collector.WherePasses(allRebar).WhereElementIsNotElementType().Cast<Element>().ToList();
+            ElementCategoryFilter allAreaReinforcement = new ElementCategoryFilter(BuiltInCategory.OST_AreaRein);
+            List<Element> listOfAllAreaReinforcement = areaReinforcement_collector.WherePasses(allAreaReinforcement).WhereElementIsNotElementType().Cast<Element>().ToList();
+            listOfAllReinforcement.AddRange(listOfAllAreaReinforcement);
 
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
@@ -225,6 +228,10 @@ namespace StructuralElementsExporter
                 if (material.Contains("Steel"))
                 {
                     weight = WeightOfSteel.Convert(volume);
+                }
+                else if (quality.Contains("Aluminum"))
+                {
+                    weight = WeightOfAluminium.Convert(volume);
                 }
 
                 Beam beam = new Beam(typeID, material, quality, volume, weight);
@@ -392,7 +399,13 @@ namespace StructuralElementsExporter
 
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
-                    Foundation foundation = new Foundation(typeID, material, quality, volume);
+                    double weight = 0;
+                    if (material.Contains("Steel"))
+                    {
+                        weight = WeightOfSteel.Convert(volume);
+                    }
+
+                    Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
                     foundations.AddFoundation(foundation);
 
                 }
@@ -424,7 +437,13 @@ namespace StructuralElementsExporter
 
                             material = structuralLayerDeck.Name;
 
-                            Foundation foundation = new Foundation(typeID, material, quality, volume);
+                            double weight = 0;
+                            if (material.Contains("Steel"))
+                            {
+                                weight = WeightOfSteel.Convert(volume);
+                            }
+
+                            Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
                             foundations.AddFoundation(foundation);
 
                         }
@@ -460,7 +479,13 @@ namespace StructuralElementsExporter
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                     double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
-                    Foundation foundation = new Foundation(typeID, material, quality, volume);
+                    double weight = 0;
+                    if (material.Contains("Steel"))
+                    {
+                        weight = WeightOfSteel.Convert(volume);
+                    }
+
+                    Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
                     foundations.AddFoundation(foundation);
                 }
                 
@@ -488,7 +513,33 @@ namespace StructuralElementsExporter
 
                 double weight = WeightOfSteel.Convert(volume);
 
-                Reinforcement reinforcement = new Reinforcement(typeID, material, quality, weight);
+                var rebar = (Rebar)element;
+
+                List<Reference> references = new List<Reference>();
+                string host = rebar.GetHostId().ToString();
+
+                if (host == "Part")
+                {
+
+                }
+                else if (host == "Floor")
+                {
+
+                }
+                else if (host == "Structural Foundation")
+                {
+
+                }
+                else if (host == "Wall")
+                {
+
+                }
+
+                //FamilyInstance beam = (FamilyInstance)doc.GetElement(host);
+
+
+
+                Reinforcement reinforcement = new Reinforcement(typeID, material, quality, volume, weight);
                 reinforcements.AddReinforcement(reinforcement);
 
             }
