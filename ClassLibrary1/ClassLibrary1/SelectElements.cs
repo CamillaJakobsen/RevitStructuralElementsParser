@@ -108,6 +108,7 @@ namespace StructuralElementsExporter
 
                     string material;
                     double thickness;
+                    double weight;
 
                     foreach (CompoundStructureLayer layer in layers)
                     {
@@ -120,7 +121,9 @@ namespace StructuralElementsExporter
                             material = structuralLayerDeck.Name;
                             thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
-                            ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness);
+                            weight = 0;
+
+                            ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
                             exteriorWalls.AddExteriorWall(exteriorWall);
 
                         }
@@ -163,6 +166,8 @@ namespace StructuralElementsExporter
                     {
                         string testLayer = layer.Function.ToString();
 
+                        double weight = 0;
+
                         if (testLayer == "Structure")
                         {
                             Material structuralLayerWall = doc.GetElement(layer.MaterialId) as Material;
@@ -170,7 +175,7 @@ namespace StructuralElementsExporter
                             material = structuralLayerWall.Name;
                             thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
-                            InteriorWall interiorWall = new InteriorWall(typeID, material, quality, area, thickness);
+                            InteriorWall interiorWall = new InteriorWall(typeID, material, quality, area, thickness, weight);
                             interiorWalls.AddInteriorWall(interiorWall);
 
                         }
@@ -323,6 +328,8 @@ namespace StructuralElementsExporter
                         {
                             string testLayer = layer.Function.ToString();
 
+                            double weight = 0;
+
                             if (testLayer == "Structure")
                             {
                                 Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
@@ -330,7 +337,7 @@ namespace StructuralElementsExporter
                                 material = structuralLayerDeck.Name;
                                 thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
-                                Deck deck = new Deck(typeID, material, quality, area, thickness);
+                                Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
                                 decks.AddDeck(deck);
 
                             }
@@ -364,15 +371,19 @@ namespace StructuralElementsExporter
                         {
                             string testLayer = layer.Function.ToString();
 
+                            //weight is not relevnt for deck
+                            double weight = 0;
+
                             if (testLayer == "Structure")
                             {
+                                
                                 Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
 
                                 material = structuralLayerDeck.Name;
                                 quality = structuralLayerDeck.Name;
                                 thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
 
-                                Deck deck = new Deck(typeID, material, quality, area, thickness);
+                                Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
                                 decks.AddDeck(deck);
 
                             }
@@ -502,7 +513,7 @@ namespace StructuralElementsExporter
                 int typeID = element.Id.IntegerValue;
 
                 //Maps the material of the beam
-                string material = "Steel";
+                string material = "Reinforcement";
 
                 string quality = doc.GetElement(element.GetTypeId()).Name;
                 
@@ -513,34 +524,78 @@ namespace StructuralElementsExporter
 
                 double weight = WeightOfSteel.Convert(volume);
 
-                var rebar = (Rebar)element;
-
-                List<Reference> references = new List<Reference>();
-                string host = rebar.GetHostId().ToString();
-
-                if (host == "Part")
+                if (element is RebarInSystem)
                 {
+                    var rebar = (RebarInSystem)element;
 
+
+                    //List<Reference> references = new List<Reference>();
+                    ElementId hostId = rebar.GetHostId();
+                    //var hostCategory = hostId.GetCategory()
+                    string hostCategory = doc.GetElement(hostId).Category.Name;
+
+
+                    //area and thickness is not relevant for reinforcement
+                    double area = 0;
+                    double thickness = 0;
+
+                    if (hostCategory == "Parts")
+                    {
+                        ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
+                        exteriorWalls.AddExteriorWall(exteriorWall);
+                    }
+                    else if (hostCategory == "Floor")
+                    {
+                        Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
+                        decks.AddDeck(deck);
+                    }
+                    else if (hostCategory == "Structural Foundation")
+                    {
+                        Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
+                        foundations.AddFoundation(foundation);
+                    }
+                    else if (hostCategory == "Wall")
+                    {
+                        ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
+                        exteriorWalls.AddExteriorWall(exteriorWall);
+                    }
                 }
-                else if (host == "Floor")
+                else if (element is Rebar)
                 {
+                    var rebar = (Rebar)element;
 
+
+                    //List<Reference> references = new List<Reference>();
+                    ElementId hostId = rebar.GetHostId();
+                    //var hostCategory = hostId.GetCategory()
+                    string hostCategory = doc.GetElement(hostId).Category.Name;
+
+
+                    //area and thickness is not relevant for reinforcement
+                    double area = 0;
+                    double thickness = 0;
+
+                    if (hostCategory == "Parts")
+                    {
+                        ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
+                        exteriorWalls.AddExteriorWall(exteriorWall);
+                    }
+                    else if (hostCategory == "Floor")
+                    {
+                        Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
+                        decks.AddDeck(deck);
+                    }
+                    else if (hostCategory == "Structural Foundation")
+                    {
+                        Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
+                        foundations.AddFoundation(foundation);
+                    }
+                    else if (hostCategory == "Wall")
+                    {
+                        ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
+                        exteriorWalls.AddExteriorWall(exteriorWall);
+                    }
                 }
-                else if (host == "Structural Foundation")
-                {
-
-                }
-                else if (host == "Wall")
-                {
-
-                }
-
-                //FamilyInstance beam = (FamilyInstance)doc.GetElement(host);
-
-
-
-                Reinforcement reinforcement = new Reinforcement(typeID, material, quality, volume, weight);
-                reinforcements.AddReinforcement(reinforcement);
 
             }
 
@@ -548,7 +603,7 @@ namespace StructuralElementsExporter
             StructuralElements structuralElements = new StructuralElements();
 
             // Lav breakpoint og kopier JSON filen.
-            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations, reinforcements), (Formatting)1);
+            JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations), (Formatting)1);
 
             File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations, reinforcements)));
 
