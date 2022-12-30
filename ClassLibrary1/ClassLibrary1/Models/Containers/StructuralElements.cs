@@ -11,7 +11,7 @@ namespace StructuralElementsExporter.Models
     public class StructuralElements
     {
 
-        public Dictionary<string, List<object>> CreateDictionary(Beams beams, Columns columns, Decks decks, ExteriorWalls exteriorWalls, InteriorWalls interiorWalls, Foundations foundations, Reinforcements reinforcements)
+        public Dictionary<string, List<object>> CreateDictionary(Beams beams, Columns columns, Decks decks, ExteriorWalls exteriorWalls, InteriorWalls interiorWalls, Foundations foundations)
         {
             Dictionary<string, List<object>> structuralElements = new Dictionary<string, List<object>>();
 
@@ -21,7 +21,7 @@ namespace StructuralElementsExporter.Models
             structuralElements.Add("ExteriorWall", exteriorWalls.ExteriorWallsInModel);
             structuralElements.Add("InteriorWall", interiorWalls.InteriorWallsInModel);
             structuralElements.Add("Foundation", foundations.FoundationsInModel);
-            structuralElements.Add("Reinforcement", reinforcements.ReinforcementsInModel);
+            //structuralElements.Add("Reinforcement", reinforcements.ReinforcementsInModel);
 
             return structuralElements;
         }

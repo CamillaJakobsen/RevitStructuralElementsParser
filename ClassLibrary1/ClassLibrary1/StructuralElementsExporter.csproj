@@ -67,7 +67,7 @@
     <Compile Include="Models\Containers\InteriorWalls.cs" />
     <Compile Include="Models\Containers\Columns.cs" />
     <Compile Include="Models\Containers\Decks.cs" />
-    <Compile Include="SelectElements.cs" />
+    <Compile Include="ExportStructuralElementsForLCA.cs" />
     <Compile Include="Models\TerrainDeck.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\InteriorWall.cs" />

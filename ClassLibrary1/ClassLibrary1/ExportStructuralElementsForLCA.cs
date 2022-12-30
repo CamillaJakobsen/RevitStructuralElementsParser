@@ -22,7 +22,7 @@ namespace StructuralElementsExporter
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    public class SelectElements : IExternalCommand
+    public class ExportStructuralElementsForLCA : IExternalCommand
     {
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -544,17 +544,17 @@ namespace StructuralElementsExporter
                         ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
                         exteriorWalls.AddExteriorWall(exteriorWall);
                     }
-                    else if (hostCategory == "Floor")
+                    else if (hostCategory == "Floors")
                     {
                         Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
                         decks.AddDeck(deck);
                     }
-                    else if (hostCategory == "Structural Foundation")
+                    else if (hostCategory == "Structural Foundations")
                     {
                         Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
                         foundations.AddFoundation(foundation);
                     }
-                    else if (hostCategory == "Wall")
+                    else if (hostCategory == "Walls")
                     {
                         ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
                         exteriorWalls.AddExteriorWall(exteriorWall);
@@ -580,17 +580,17 @@ namespace StructuralElementsExporter
                         ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
                         exteriorWalls.AddExteriorWall(exteriorWall);
                     }
-                    else if (hostCategory == "Floor")
+                    else if (hostCategory == "Floors")
                     {
                         Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
                         decks.AddDeck(deck);
                     }
-                    else if (hostCategory == "Structural Foundation")
+                    else if (hostCategory == "Structural Foundations")
                     {
                         Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
                         foundations.AddFoundation(foundation);
                     }
-                    else if (hostCategory == "Wall")
+                    else if (hostCategory == "Walls")
                     {
                         ExteriorWall exteriorWall = new ExteriorWall(typeID, material, quality, area, thickness, weight);
                         exteriorWalls.AddExteriorWall(exteriorWall);
@@ -605,7 +605,7 @@ namespace StructuralElementsExporter
             // Lav breakpoint og kopier JSON filen.
             JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations), (Formatting)1);
 
-            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations, reinforcements)));
+            File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
 
             return Result.Succeeded;
 

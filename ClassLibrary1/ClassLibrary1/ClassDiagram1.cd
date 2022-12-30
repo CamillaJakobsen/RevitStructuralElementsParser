@@ -3,42 +3,42 @@
   <Class Name="StructuralElementsExporter.Models.Beam">
     <Position X="1.25" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAABAAAAAAABAACAAAAAgAAIAAAAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAAAAACAAAAAgAAIAAAAAAAA=</HashCode>
       <FileName>Models\Beam.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StructuralElementsExporter.Models.Column">
     <Position X="2.75" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAABAAAAAAABAACAAAAAgAAIAAAAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAAAAACAAAAAgAAIAAAAAAAA=</HashCode>
       <FileName>Models\Column.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StructuralElementsExporter.Models.Deck">
     <Position X="4.25" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAACAAAAAgAAAAAQAAAAA=</HashCode>
       <FileName>Models\Deck.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StructuralElementsExporter.Models.ExteriorWall">
     <Position X="5.75" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAACAAAAAgAAAAAQAAAAA=</HashCode>
       <FileName>Models\ExteriorWall.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StructuralElementsExporter.Models.InteriorWall">
     <Position X="7.25" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAABAABAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAABAABAAAAAAAAAACAAAAAgAAAAAQAAAAA=</HashCode>
       <FileName>Models\InteriorWall.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StructuralElementsExporter.Models.Foundation">
     <Position X="8.75" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAABAAAAAAAAAAAAAAAAgAAIAAAAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAAAAABAAAAAAAAAACAAAAAgAAIAAAAAAAA=</HashCode>
       <FileName>Models\Foundation.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -84,11 +84,11 @@
       <FileName>Models\Containers\InteriorWalls.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="StructuralElementsExporter.SelectElements">
+  <Class Name="StructuralElementsExporter.ExportStructuralElementsForLCA">
     <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SelectElements.cs</FileName>
+      <FileName>ExportStructuralElementsForLCA.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
