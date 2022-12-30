@@ -219,8 +219,8 @@ namespace StructuralElementsExporter
                 }
                 else
                 {
-                    //quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
+                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
                 }
 
                 ////Maps the crossSectionArea based on the volume and the length
@@ -269,8 +269,8 @@ namespace StructuralElementsExporter
                 }
                 else
                 {
-                    //quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
+                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
+                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
                 }
 
 
