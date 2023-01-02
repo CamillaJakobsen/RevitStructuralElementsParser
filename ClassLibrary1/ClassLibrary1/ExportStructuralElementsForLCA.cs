@@ -99,7 +99,7 @@ namespace StructuralElementsExporter
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    double area = Math.Round(RoundToSignificantDigits.RoundDigits(area1, 4), 5);
 
                     //if material consists of more than one layer
                     CompoundStructure wallLayers = walltype.GetCompoundStructure();
@@ -152,7 +152,7 @@ namespace StructuralElementsExporter
 
                     // Maps the area of the wall
                     double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                    double area = RoundToSignificantDigits.RoundDigits(area1, 3);
+                    double area = RoundToSignificantDigits.RoundDigits(area1, 4);
 
                     //if material consists of more than one layer
                     CompoundStructure wallLayers = walltype.GetCompoundStructure();
@@ -200,43 +200,27 @@ namespace StructuralElementsExporter
                 //Maps the material of the beam
                 string material = familyInstance.StructuralMaterialType.ToString();
 
-                string quality;
-                if (material == "Wood")
-                {
-                    //quality = familySymbol.FamilyName;
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
+                string quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
                     if (quality == "<By Category>")
                     {
                         quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                     }
-                    
-                    
-                }
-                else if (material == "Steel")
-                {
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
-                    //quality = cast.GetOrderedParameters("Structural Material").AsValueString();
-                }
-                else
-                {
-                    quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
-                }
+                   
 
                 ////Maps the crossSectionArea based on the volume and the length
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4), 5);
 
                 double weight = 0;
                 if (material.Contains("Steel"))
                 {
-                    RoundToSignificantDigits.RoundDigits(weight = WeightOfSteel.Convert(volume), 4);
+                    weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4), 5);
                 }
                 else if (quality.Contains("Aluminum"))
                 {
-                    weight = RoundToSignificantDigits.RoundDigits(WeightOfAluminium.Convert(volume), 4);
+                    weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfAluminium.Convert(volume), 4), 5);
                 }
 
                 Beam beam = new Beam(typeID, material, quality, volume, weight);
@@ -255,37 +239,26 @@ namespace StructuralElementsExporter
                 //Maps the material of the column
                 string material = familyInstance.StructuralMaterialType.ToString();
 
-                string quality;
-                if (material == "Wood")
-                {
-                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
-                    //quality = familySymbol.FamilyName;
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
-                }
-                else if (material == "Steel")
-                {
-                    quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
-                    //quality = cast.GetOrderedParameters("Structural Material").AsValueString();
-                }
-                else
+                string quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
+                if (quality == "<By Category>")
                 {
                     quality = doc.GetElement(cast.GetTypeId()).LookupParameter("Structural Material").AsValueString();
-                    //quality = familyInstance.get_Parameter(BuiltInParameter.STRUCTURAL_MATERIAL_PARAM).AsValueString();
                 }
+                
 
 
                 //Maps the length of the column
                 double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
-                double length = RoundToSignificantDigits.RoundDigits(length1, 4);
+                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
 
                 ////Maps the crossSectionArea based on volume and length
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+                double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4), 5);
 
                 double weight = 0;
                 if (material.Contains("Steel"))
                 {
-                    weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
+                    weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4), 5);
                 }
 
                 Column column = new Column(typeID, material, quality, volume, weight);
@@ -311,7 +284,7 @@ namespace StructuralElementsExporter
 
                         // Maps the area of the deck
                         double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                        double area = RoundToSignificantDigits.RoundDigits(area1, 5);
+                        double area = RoundToSignificantDigits.RoundDigits(area1, 4);
                         //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
                         FloorType carsten = doc.GetElement(element.GetTypeId()) as FloorType;
@@ -353,7 +326,7 @@ namespace StructuralElementsExporter
 
                         // Maps the area of the deck
                         double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
-                        double area = RoundToSignificantDigits.RoundDigits(area1, 5);
+                        double area = RoundToSignificantDigits.RoundDigits(area1, 4);
                         //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
                         RoofType carsten = doc.GetElement(element.GetTypeId()) as RoofType;
@@ -406,14 +379,14 @@ namespace StructuralElementsExporter
                     string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+                    double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4), 5);
 
                     string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     double weight = 0;
                     if (material.Contains("Steel"))
                     {
-                        weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
+                        weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4), 5);
                     }
 
                     Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
@@ -427,7 +400,7 @@ namespace StructuralElementsExporter
                     string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
 
                     FloorType carsten = doc.GetElement(element.GetTypeId()) as FloorType;
 
@@ -488,7 +461,7 @@ namespace StructuralElementsExporter
                     }
 
                     double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+                    double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
 
                     double weight = 0;
                     if (material.Contains("Steel"))
@@ -520,9 +493,9 @@ namespace StructuralElementsExporter
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.LookupParameter("Reinforcement Volume").AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
+                double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4),5);
 
-                double weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
+                double weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4),5);
 
                 if (element is RebarInSystem)
                 {
