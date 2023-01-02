@@ -232,11 +232,11 @@ namespace StructuralElementsExporter
                 double weight = 0;
                 if (material.Contains("Steel"))
                 {
-                    weight = WeightOfSteel.Convert(volume);
+                    RoundToSignificantDigits.RoundDigits(weight = WeightOfSteel.Convert(volume), 4);
                 }
                 else if (quality.Contains("Aluminum"))
                 {
-                    weight = WeightOfAluminium.Convert(volume);
+                    weight = RoundToSignificantDigits.RoundDigits(WeightOfAluminium.Convert(volume), 4);
                 }
 
                 Beam beam = new Beam(typeID, material, quality, volume, weight);
@@ -276,16 +276,16 @@ namespace StructuralElementsExporter
 
                 //Maps the length of the column
                 double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
-                double length = RoundToSignificantDigits.RoundDigits(length1, 3);
+                double length = RoundToSignificantDigits.RoundDigits(length1, 4);
 
                 ////Maps the crossSectionArea based on volume and length
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
                 double weight = 0;
                 if (material.Contains("Steel"))
                 {
-                    weight = WeightOfSteel.Convert(volume);
+                    weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
                 }
 
                 Column column = new Column(typeID, material, quality, volume, weight);
@@ -335,7 +335,7 @@ namespace StructuralElementsExporter
                                 Material structuralLayerDeck = doc.GetElement(layer.MaterialId) as Material;
 
                                 material = structuralLayerDeck.Name;
-                                thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 3);
+                                thickness = RoundToSignificantDigits.RoundDigits(ImperialToMetricConverter.ConvertFromFeetToMeters(layer.Width), 4);
 
                                 Deck deck = new Deck(typeID, material, quality, area, thickness, weight);
                                 decks.AddDeck(deck);
@@ -413,7 +413,7 @@ namespace StructuralElementsExporter
                     double weight = 0;
                     if (material.Contains("Steel"))
                     {
-                        weight = WeightOfSteel.Convert(volume);
+                        weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
                     }
 
                     Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
@@ -451,7 +451,7 @@ namespace StructuralElementsExporter
                             double weight = 0;
                             if (material.Contains("Steel"))
                             {
-                                weight = WeightOfSteel.Convert(volume);
+                                weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
                             }
 
                             Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
@@ -493,7 +493,7 @@ namespace StructuralElementsExporter
                     double weight = 0;
                     if (material.Contains("Steel"))
                     {
-                        weight = WeightOfSteel.Convert(volume);
+                        weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
                     }
 
                     Foundation foundation = new Foundation(typeID, material, quality, volume, weight);
@@ -520,9 +520,9 @@ namespace StructuralElementsExporter
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.LookupParameter("Reinforcement Volume").AsDouble());
                 //Alternative way to get volume
                 //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
-                double volume = RoundToSignificantDigits.RoundDigits(volume1, 3);
+                double volume = RoundToSignificantDigits.RoundDigits(volume1, 4);
 
-                double weight = WeightOfSteel.Convert(volume);
+                double weight = RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4);
 
                 if (element is RebarInSystem)
                 {
