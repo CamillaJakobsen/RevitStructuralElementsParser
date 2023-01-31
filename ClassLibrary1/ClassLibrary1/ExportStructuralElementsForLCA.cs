@@ -7,15 +7,9 @@ using Autodesk.Revit.UI;
 using Document = Autodesk.Revit.DB.Document;
 using StructuralElementsExporter.Models;
 using StructuralElementsExporter.Helpers;
-using System.IO;
 using Newtonsoft.Json;
 using StructuralElementsExporter.Models.Containers;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
-using System.Security.Policy;
 using File = System.IO.File;
-using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB.Structure;
 
 namespace StructuralElementsExporter
@@ -31,6 +25,10 @@ namespace StructuralElementsExporter
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
+            
+            // Lists of structural elements from Revit
+            #region Lists 
+
 
             FilteredElementCollector wall_collector = new FilteredElementCollector(doc);
             ElementCategoryFilter allWalls = new ElementCategoryFilter(BuiltInCategory.OST_Walls);
@@ -65,6 +63,8 @@ namespace StructuralElementsExporter
             ElementCategoryFilter allAreaReinforcement = new ElementCategoryFilter(BuiltInCategory.OST_AreaRein);
             List<Element> listOfAllAreaReinforcement = areaReinforcement_collector.WherePasses(allAreaReinforcement).WhereElementIsNotElementType().Cast<Element>().ToList();
             listOfAllReinforcement.AddRange(listOfAllAreaReinforcement);
+
+            #endregion 
 
             // Creates a Lists of all exterior and interior walls 
             foreach (Wall element in listOfAllWalls)
@@ -207,12 +207,11 @@ namespace StructuralElementsExporter
                     }
                    
 
-                ////Maps the crossSectionArea based on the volume and the length
+                //Maps the volume
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(familyInstance.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED).AsDouble());
-                //Alternative way to get volume
-                //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
                 double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4), 5);
 
+                //Maps the weight
                 double weight = 0;
                 if (material.Contains("Steel"))
                 {
@@ -246,7 +245,6 @@ namespace StructuralElementsExporter
                 }
                 
 
-
                 //Maps the length of the column
                 double length1 = ImperialToMetricConverter.ConvertFromFeetToMeters(familyInstance.get_Parameter(BuiltInParameter.INSTANCE_LENGTH_PARAM).AsDouble());
                 double length = RoundToSignificantDigits.RoundDigits(length1, 3);
@@ -279,7 +277,7 @@ namespace StructuralElementsExporter
                         int typeID = element.Id.IntegerValue;
 
 
-                        //Hvordan får man Structural material??
+                        //Assigns structural material
                         string quality = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
 
                         // Maps the area of the deck
@@ -327,7 +325,6 @@ namespace StructuralElementsExporter
                         // Maps the area of the deck
                         double area1 = ImperialToMetricConverter.ConvertFromSquaredFeetToSquaredMeters(element.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED).AsDouble());
                         double area = RoundToSignificantDigits.RoundDigits(area1, 4);
-                        //string material = carsten.FloorType.LookupParameter("Structural Material").AsValueString();
 
                         RoofType carsten = doc.GetElement(element.GetTypeId()) as RoofType;
 
@@ -437,10 +434,10 @@ namespace StructuralElementsExporter
                 }
                 else if (test == "FamilyInstance")
                 {
-
-                    int typeID = element.Id.IntegerValue;
-                    
                     var cast = (FamilyInstance)element;
+                    int typeID = cast.Id.IntegerValue;
+                    
+                    
                     string material = cast.StructuralMaterialType.ToString();
                     //string material = doc.GetElement(element.GetTypeId()).LookupParameter("Structural Material").AsValueString();
                     Family family = doc.GetElement(cast.GetTypeId()) as Family;
@@ -473,11 +470,10 @@ namespace StructuralElementsExporter
                     foundations.AddFoundation(foundation);
                 }
                 
-
             }
 
             Reinforcements reinforcements = new Reinforcements();
-            // Assigns the revit parameters to the Beam constructor
+            // Assigns the revit parameters of reinforcement the host constructor
             foreach (Element element in listOfAllReinforcement)
             {
 
@@ -485,14 +481,11 @@ namespace StructuralElementsExporter
 
                 int typeID = element.Id.IntegerValue;
 
-                //Maps the material of the beam
                 string material = "Reinforcement";
 
                 string quality = doc.GetElement(element.GetTypeId()).Name;
                 
                 double volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(element.LookupParameter("Reinforcement Volume").AsDouble());
-                //Alternative way to get volume
-                //var volume1 = ImperialToMetricConverter.ConvertFromCubicFeetToCubicMeters(cast.LookupParameter("Volume").AsDouble());
                 double volume = Math.Round(RoundToSignificantDigits.RoundDigits(volume1, 4),5);
 
                 double weight = Math.Round(RoundToSignificantDigits.RoundDigits(WeightOfSteel.Convert(volume), 4),5);
@@ -501,10 +494,7 @@ namespace StructuralElementsExporter
                 {
                     var rebar = (RebarInSystem)element;
 
-
-                    //List<Reference> references = new List<Reference>();
                     ElementId hostId = rebar.GetHostId();
-                    //var hostCategory = hostId.GetCategory()
                     string hostCategory = doc.GetElement(hostId).Category.Name;
 
 
@@ -537,12 +527,8 @@ namespace StructuralElementsExporter
                 {
                     var rebar = (Rebar)element;
 
-
-                    //List<Reference> references = new List<Reference>();
                     ElementId hostId = rebar.GetHostId();
-                    //var hostCategory = hostId.GetCategory()
                     string hostCategory = doc.GetElement(hostId).Category.Name;
-
 
                     //area and thickness is not relevant for reinforcement
                     double area = 0;
@@ -575,7 +561,7 @@ namespace StructuralElementsExporter
             // Add all structural elements to a Dictionary of Structuralelements
             StructuralElements structuralElements = new StructuralElements();
 
-            // Lav breakpoint og kopier JSON filen.
+            // Serialise to JSON.
             JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations), (Formatting)1);
 
             File.WriteAllText(@"C:\Users\camil\Documents\Structuralelements_Json", JsonConvert.SerializeObject(structuralElements.CreateDictionary(beams, columns, decks, exteriorWalls, interiorWalls, foundations)));
